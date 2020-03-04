@@ -23,34 +23,53 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main{
     public static void main(String[] args) {
         System.out.println("Hello World");
-
+        readInFile("defDB.csv");
     }
 
     /**
      * Reads in the CSV file and creates an array of workers
      * @param fileName the name of the csv file
      */
-    public void readInFile(String fileName){
+    public static void readInFile(String fileName){
         final String separator = ",";
         BufferedReader b = null;
         try {
             b = new BufferedReader(new FileReader(fileName));
             String line;
+            String[] separatedValues;
+            ArrayList<String> enumChars = new ArrayList<>();
+            b.readLine();
             while ((line = b.readLine()) != null) {
-                String[] separatedValues = line.split(separator);
+                //line = line.replaceAll("^\\s+", "");
+                line = line.replaceAll("-","_");
+                line = line.replaceAll(" ","_");
+                separatedValues = line.split(separator);
+                int id = Integer.parseInt(separatedValues[0]);
+                String nat = separatedValues[1];
+                String dob = separatedValues[2];
+                String marit = separatedValues[3];
+                int numChild = Integer.parseInt(separatedValues[4]);
+                WorkingReasons work = WorkingReasons.valueOf(separatedValues[5]);
+                ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
+                WorkSkills workSkills = WorkSkills.valueOf(separatedValues[7]);
+                String leaveReason = separatedValues[8];
+                String currJob = separatedValues[9];
+                ArrayList<String> pastJobs = getPastJobs(separatedValues[10]);
 
 
             }
+            System.out.println(enumChars);
         }
         catch (FileNotFoundException f){
-            //TODO print error message
+            System.out.println("File not found");
         }
         catch (IOException e){
-            //TODO print error message
+            System.out.println("IO exception");
         }
 
         finally{
@@ -66,5 +85,12 @@ public class Main{
         //return array;
 
         //TODO Store the worker objects in an array and return that array
+    }
+
+    public static ArrayList<Characteristics> getCharacteristics(String input){
+        return null;
+    }
+    public static ArrayList<String> getPastJobs(String input){
+        return null;
     }
 }
