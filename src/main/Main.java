@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 public class Main{
     public static void main(String[] args) {
         System.out.println("Hello World");
@@ -57,7 +58,7 @@ public class Main{
                 int numChild = Integer.parseInt(separatedValues[4]);
                 WorkingReasons work = WorkingReasons.valueOf(separatedValues[5]);
                 ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
-                WorkSkills workSkills = WorkSkills.valueOf(separatedValues[7]);
+                WorkSkills workSkills = getWorkSkills(separatedValues[7]);
                 String leaveReason = separatedValues[8];
                 String currJob = separatedValues[9];
                 ArrayList<String> pastJobs = getPastJobs(separatedValues[10]);
@@ -93,9 +94,22 @@ public class Main{
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
         String trimmedString = input.replace("[","");
-        trimmedString
+        trimmedString = trimmedString.replaceAll("]","");
+        trimmedString = trimmedString.replaceAll("'","");
+        trimmedString = trimmedString.replaceAll(" ","_");
+        String[] characteristics = trimmedString.split(";");
+        ArrayList<Characteristics> chars = new ArrayList<Characteristics>();
+        for (int i =0;i < characteristics.length;i++){
+            chars.add(Characteristics.valueOf(characteristics[i]));
+        }
+        return chars;
     }
+
     public static ArrayList<String> getPastJobs(String input){
-        return null;
+
+    }
+
+    public static ArrayList<WorkSkills> getWorkSkills(String input){
+
     }
 }
