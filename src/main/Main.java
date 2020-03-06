@@ -36,19 +36,19 @@ public class Main{
      * Reads in the CSV file and creates an array of workers
      * @param fileName the name of the csv file
      */
-    public static void readInFile(String fileName){
+    public static ArrayList<OBAJWorker> readInFile(String fileName){
         final String separator = ",";
         BufferedReader b = null;
+        ArrayList<OBAJWorker> workers = new ArrayList<OBAJWorker>();
         try {
             b = new BufferedReader(new FileReader(fileName));
             String line;
             String[] separatedValues;
-            ArrayList<String> enumChars = new ArrayList<>();
             b.readLine();
             while ((line = b.readLine()) != null) {
                 //line = line.replaceAll("^\\s+", "");
-                line = line.replaceAll("-","_");
-                line = line.replaceAll(" ","_");
+                line = line.replace("-","_");
+                //line = line.replace(" ","_");
                 separatedValues = line.split(separator);
 
                 int id = Integer.parseInt(separatedValues[0]);
@@ -58,17 +58,16 @@ public class Main{
                 int numChild = Integer.parseInt(separatedValues[4]);
                 WorkingReasons work = WorkingReasons.valueOf(separatedValues[5]);
                 ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
-                WorkSkills workSkills = getWorkSkills(separatedValues[7]);
+                ArrayList<WorkSkills> workSkills = getWorkSkills(separatedValues[7]);
                 String leaveReason = separatedValues[8];
                 String currJob = separatedValues[9];
                 ArrayList<String> pastJobs = getPastJobs(separatedValues[10]);
                 String startDate = separatedValues[11];
                 String startCurrentDate = separatedValues[12];
                 String endDate = separatedValues[13];
-
-
+                workers.add(new OBAJWorker(id,nat,dob,marit,numChild,work,chars,workSkills,leaveReason,currJob,pastJobs,startDate,startCurrentDate,endDate));
             }
-            System.out.println(enumChars);
+
         }
         catch (FileNotFoundException f){
             System.out.println("File not found");
@@ -87,16 +86,15 @@ public class Main{
             }
         }
 
-        //return array;
-
-        //TODO Store the worker objects in an array and return that array
+        return workers;
     }
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
         String trimmedString = input.replace("[","");
-        trimmedString = trimmedString.replaceAll("]","");
-        trimmedString = trimmedString.replaceAll("'","");
-        trimmedString = trimmedString.replaceAll(" ","_");
+        trimmedString = trimmedString.replace("]","");
+        trimmedString = trimmedString.replace("'","");
+        trimmedString = trimmedString.trim();
+        trimmedString = trimmedString.replace(" ","_");
         String[] characteristics = trimmedString.split(";");
         ArrayList<Characteristics> chars = new ArrayList<Characteristics>();
         for (int i =0;i < characteristics.length;i++){
@@ -106,10 +104,30 @@ public class Main{
     }
 
     public static ArrayList<String> getPastJobs(String input){
+        String trimmedString = input.replace("[","");
+        trimmedString = trimmedString.replace("]","");
+        trimmedString = trimmedString.replace("'","");
+        trimmedString = trimmedString.trim();
+        trimmedString = trimmedString.replace(" ","_");
+        String[] jobList = trimmedString.split(";");
+        ArrayList<String> jobs = new ArrayList<String>();
+        for (int i =0;i < jobList.length;i++){
+            jobs.add(jobList[i]);
+        }
+        return jobs;
 
     }
 
     public static ArrayList<WorkSkills> getWorkSkills(String input){
-
+        String trimmedString = input.replace("[","");
+        trimmedString = trimmedString.replace("]","");
+        trimmedString = trimmedString.replace("'","");
+        trimmedString = trimmedString.replace(" ","");
+        String[] skills = trimmedString.split(";");
+        ArrayList<WorkSkills> skillArray = new ArrayList<WorkSkills>();
+        for (int i =0;i < skills.length;i++){
+            skillArray.add(WorkSkills.valueOf(skills[i]));
+        }
+        return skillArray;
     }
 }

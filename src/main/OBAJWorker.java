@@ -37,7 +37,7 @@ public class OBAJWorker {
     /** Physical or Mental Characteristics (a list of enums, specifically a list of Characteristics enums) */
     private ArrayList<Characteristics> workerCharacteristics;
     /** Work Skill (an Enum called Skills) */
-    private WorkSkills workerSkill;
+    private ArrayList<WorkSkills> workerSkill;
     /** Reason for leaving position */
     private String leaveReason;
     /** Current Job */
@@ -51,7 +51,7 @@ public class OBAJWorker {
     /** Date ended working */
     private String endDate;
 
-    public OBAJWorker(int workerID, String nationality, String DOB, String maritalStatus, int numberChildren, WorkingReasons workReason, ArrayList<Characteristics> workerCharacteristics, WorkSkills workerSkill, String leaveReason, String currJob, ArrayList<String> pastJobs, String startWorkingDate, String startCurrentDate, String endDate) {
+    public OBAJWorker(int workerID, String nationality, String DOB, String maritalStatus, int numberChildren, WorkingReasons workReason, ArrayList<Characteristics> workerCharacteristics, ArrayList<WorkSkills> workerSkill, String leaveReason, String currJob, ArrayList<String> pastJobs, String startWorkingDate, String startCurrentDate, String endDate) {
         this.workerID = workerID;
         this.nationality = nationality;
         this.DOB = DOB;
@@ -96,7 +96,7 @@ public class OBAJWorker {
         return workerCharacteristics;
     }
 
-    public WorkSkills getWorkerSkill() {
+    public ArrayList<WorkSkills> getWorkerSkill() {
         return workerSkill;
     }
 
