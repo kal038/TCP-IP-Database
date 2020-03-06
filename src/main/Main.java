@@ -49,6 +49,7 @@ public class Main{
                 line = line.replaceAll("-","_");
                 line = line.replaceAll(" ","_");
                 separatedValues = line.split(separator);
+
                 int id = Integer.parseInt(separatedValues[0]);
                 String nat = separatedValues[1];
                 String dob = separatedValues[2];
@@ -60,6 +61,9 @@ public class Main{
                 String leaveReason = separatedValues[8];
                 String currJob = separatedValues[9];
                 ArrayList<String> pastJobs = getPastJobs(separatedValues[10]);
+                String startDate = separatedValues[11];
+                String startCurrentDate = separatedValues[12];
+                String endDate = separatedValues[13];
 
 
             }
@@ -88,7 +92,8 @@ public class Main{
     }
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
-        return null;
+        String trimmedString = input.replace("[","");
+        trimmedString
     }
     public static ArrayList<String> getPastJobs(String input){
         return null;
