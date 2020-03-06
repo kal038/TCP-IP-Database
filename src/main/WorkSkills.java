@@ -1,5 +1,5 @@
 package main;
 
 public enum WorkSkills {
-    FAST, CAREFUL
+    Typing, Electrical, Strong, Mathematics, Computer, Construction, Mechanical, Shoe_making,
 }
