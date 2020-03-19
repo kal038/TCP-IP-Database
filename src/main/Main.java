@@ -19,6 +19,7 @@
 package
         main;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,8 +29,25 @@ import java.util.ArrayList;
 
 public class Main{
     public static void main(String[] args) {
-        System.out.println("Hello World");
+
         readInFile("defDB.csv");
+        getDate();
+    }
+
+    /**
+     * Prompts the user to enter a new date for the system or keep the current date.
+     */
+    public static void getDate(){
+        Object[] options = {"Use system time","Input future time","Cancel"};
+        int n = JOptionPane.showOptionDialog(null,
+                "Would you like to use the system time or enter a future time?",
+                "System Time Setup",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[2]);
+        //TODO finish this method
     }
 
     /**
@@ -46,11 +64,8 @@ public class Main{
             String[] separatedValues;
             b.readLine();
             while ((line = b.readLine()) != null) {
-                //line = line.replaceAll("^\\s+", "");
                 line = line.replace("-","_");
-                //line = line.replace(" ","_");
                 separatedValues = line.split(separator);
-
                 int id = Integer.parseInt(separatedValues[0]);
                 String nat = separatedValues[1];
                 String dob = separatedValues[2];
@@ -85,20 +100,25 @@ public class Main{
                 }
             }
         }
-
+        //System.out.println(workers.get(0));
         return workers;
     }
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
-        String trimmedString = input.replace("[","");
+        String trimmedString = input.trim();
+        trimmedString = trimmedString.replace("[","");
         trimmedString = trimmedString.replace("]","");
         trimmedString = trimmedString.replace("'","");
-        trimmedString = trimmedString.trim();
-        trimmedString = trimmedString.replace(" ","_");
+
+        //trimmedString = trimmedString.replace(" ","_");
         String[] characteristics = trimmedString.split(";");
+        //System.out.println(trimmedString);
         ArrayList<Characteristics> chars = new ArrayList<Characteristics>();
         for (int i =0;i < characteristics.length;i++){
-            chars.add(Characteristics.valueOf(characteristics[i]));
+            String temp = characteristics[i];
+            temp = temp.trim();
+            temp = temp.replace(" ","_");
+            chars.add(Characteristics.valueOf(temp));
         }
         return chars;
     }

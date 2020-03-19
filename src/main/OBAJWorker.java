@@ -123,4 +123,24 @@ public class OBAJWorker {
     public String getEndDate() {
         return endDate;
     }
+
+    @Override
+    public String toString() {
+        return "OBAJWorker{" +
+                "workerID=" + workerID +
+                ", nationality='" + nationality + '\'' +
+                ", DOB='" + DOB + '\'' +
+                ", maritalStatus='" + maritalStatus + '\'' +
+                ", numberChildren=" + numberChildren +
+                ", workReason=" + workReason +
+                ", workerCharacteristics=" + workerCharacteristics +
+                ", workerSkill=" + workerSkill +
+                ", leaveReason='" + leaveReason + '\'' +
+                ", currJob='" + currJob + '\'' +
+                ", pastJobs=" + pastJobs +
+                ", startWorkingDate='" + startWorkingDate + '\'' +
+                ", startCurrentDate='" + startCurrentDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                '}';
+    }
 }
