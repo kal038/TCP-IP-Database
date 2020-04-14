@@ -19,36 +19,66 @@
 package
         main;
 
+import com.sun.source.tree.ParenthesizedTree;
+
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class Main{
     public static void main(String[] args) {
 
         readInFile("defDB.csv");
-        getDate();
+        try {
+            String inputDate = getDate();
+            System.out.println(inputDate);
+        }
+        catch (NullPointerException e){
+            System.out.println("Goodbye");
+        }
+
     }
 
     /**
      * Prompts the user to enter a new date for the system or keep the current date.
      */
-    public static void getDate(){
-        Object[] options = {"Use system time","Input future time","Cancel"};
+    public static String getDate(){
+        Object[] options = {"Use system time","Input future time"};
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date sysTime = new Date();
         int n = JOptionPane.showOptionDialog(null,
                 "Would you like to use the system time or enter a future time?",
                 "System Time Setup",
-                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                options,
-                options[2]);
-        //TODO finish this method
+                options,options[0]);
+        if (n == 0){//Use system time
+            return formatter.format(sysTime);
+        }
+        else {
+            String input = JOptionPane.showInputDialog("Please enter the date in this format: MM/dd/yyyy");
+            try{
+                Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(input);
+                if (date1.compareTo(sysTime) < 0)
+                    return formatter.format(sysTime);
+                else
+                    return formatter.format(date1);
+            }
+            catch (ParseException e) {
+                JOptionPane.showMessageDialog(null,"Invalid date, using current time");
+                return formatter.format(sysTime);
+            }
+        }
     }
+
 
     /**
      * Reads in the CSV file and creates an array of workers
