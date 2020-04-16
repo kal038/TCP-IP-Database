@@ -26,10 +26,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 public class Main{
@@ -132,6 +134,22 @@ public class Main{
         }
         //System.out.println(workers.get(0));
         return workers;
+    }
+    public static ArrayList<OBAJWorker> updateWorkersEndDate(ArrayList<OBAJWorker> inputArray, Date time){
+        ArrayList<OBAJWorker> updatedArray = inputArray;
+        for (OBAJWorker w: inputArray){
+            try {
+                Date workerStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
+                long diffInMillies = Math.abs(time.getTime() - workerStart.getTime());
+                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (diff > 547.5){
+
+                }
+            }
+            catch (ParseException p){
+                //TODO
+            }
+        }
     }
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
