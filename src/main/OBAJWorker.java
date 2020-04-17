@@ -19,7 +19,9 @@
 package
         main;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class OBAJWorker {
     /** A unique ID number */
@@ -41,9 +43,9 @@ public class OBAJWorker {
     /** Reason for leaving position */
     private String leaveReason;
     /** Current Job */
-    private String currJob;
+    private Jobs currJob;
     /** Previous Jobs (An array list)*/
-    private ArrayList<String> pastJobs;
+    private ArrayList<Jobs> pastJobs;
     /** Date started working (I currently have it as a String but we could have a DateUtil just like in the lab to turn it into an object) */
     private String startWorkingDate;
     /** Date began current job */
@@ -51,7 +53,7 @@ public class OBAJWorker {
     /** Date ended working */
     private String endDate;
 
-    public OBAJWorker(int workerID, String nationality, String DOB, String maritalStatus, int numberChildren, WorkingReasons workReason, ArrayList<Characteristics> workerCharacteristics, ArrayList<WorkSkills> workerSkill, String leaveReason, String currJob, ArrayList<String> pastJobs, String startWorkingDate, String startCurrentDate, String endDate) {
+    public OBAJWorker(int workerID, String nationality, String DOB, String maritalStatus, int numberChildren, WorkingReasons workReason, ArrayList<Characteristics> workerCharacteristics, ArrayList<WorkSkills> workerSkill, String leaveReason, Jobs currJob, ArrayList<Jobs> pastJobs, String startWorkingDate, String startCurrentDate, String endDate) {
         this.workerID = workerID;
         this.nationality = nationality;
         this.DOB = DOB;
@@ -104,11 +106,11 @@ public class OBAJWorker {
         return leaveReason;
     }
 
-    public String getCurrJob() {
+    public Jobs getCurrJob() {
         return currJob;
     }
 
-    public ArrayList<String> getPastJobs() {
+    public ArrayList<Jobs> getPastJobs() {
         return pastJobs;
     }
 
@@ -142,5 +144,24 @@ public class OBAJWorker {
                 ", startCurrentDate='" + startCurrentDate + '\'' +
                 ", endDate='" + endDate + '\'' +
                 '}';
+    }
+    public void setEndDate(Date newDate){
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        endDate = formatter.format(newDate);
+    }
+    public void setCurrJob(Jobs input){
+        currJob = input;
+    }
+    public void setPastJobs(ArrayList<Jobs> newJobs){
+        pastJobs = newJobs;
+    }
+    public void setStartCurrentDate(Date date){
+        if (date == null){
+            startCurrentDate = "NA";
+        }
+        else {
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            startCurrentDate = formatter.format(date);
+        }
     }
 }

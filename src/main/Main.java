@@ -107,8 +107,8 @@ public class Main{
                 ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
                 ArrayList<WorkSkills> workSkills = getWorkSkills(separatedValues[7]);
                 String leaveReason = separatedValues[8];
-                String currJob = separatedValues[9];
-                ArrayList<String> pastJobs = getPastJobs(separatedValues[10]);
+                Jobs currJob = Jobs.valueOf(separatedValues[9]);
+                ArrayList<Jobs> pastJobs = getPastJobs(separatedValues[10]);
                 String startDate = separatedValues[11];
                 String startCurrentDate = separatedValues[12];
                 String endDate = separatedValues[13];
@@ -135,20 +135,51 @@ public class Main{
         //System.out.println(workers.get(0));
         return workers;
     }
-    public static ArrayList<OBAJWorker> updateWorkersEndDate(ArrayList<OBAJWorker> inputArray, Date time){
+    public static ArrayList<OBAJWorker> updateWorkersJobs(ArrayList<OBAJWorker> inputArray, Date time){
         ArrayList<OBAJWorker> updatedArray = inputArray;
-        for (OBAJWorker w: inputArray){
+        for (OBAJWorker w: updatedArray){
             try {
-                Date workerStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
-                long diffInMillies = Math.abs(time.getTime() - workerStart.getTime());
+                Date currJobStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
+                long diffInMillies = Math.abs(time.getTime() - currJobStart.getTime());
                 long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (diff > 547.5){
+                if (diff/30 > w.getCurrJob().getEmployTime()){//Assuming 30 days in a month
+                    ArrayList<Jobs> prevJobs = w.getPastJobs();
+                    prevJobs.add(w.getCurrJob());
+                    w.setPastJobs(prevJobs);
+                    w.setCurrJob(null);
+                    for (Jobs j: Jobs.values()){
+                        if (!w.getPastJobs().contains(j)){
+                            w.setCurrJob(j);
+                            w.setStartCurrentDate(time);//TODO may need to fix this
+                            break;
+                        }
+                    }
+                    if (w.getCurrJob() == null){
+                        w.setCurrJob(Jobs.NA);
+                        w.setStartCurrentDate(null);
+                    }
+                }
+
+                Date workerStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
+                diffInMillies = Math.abs(time.getTime() - workerStart.getTime());
+                diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (diff > 547.5){//547.5 is 1 year and 6 months
+                    long newTime = (long) (workerStart.getTime() + 4.7304*Math.pow(10,10));
+                    Date endTime = new Date(newTime);
+                    w.setEndDate(endTime);
+                    ArrayList<Jobs> prevJobs = w.getPastJobs();
+                    prevJobs.add(w.getCurrJob());
+                    w.setPastJobs(prevJobs);
+                    w.setCurrJob(Jobs.NA);
+                }
+                else{
 
                 }
             }
             catch (ParseException p){
                 //TODO
             }
+
         }
     }
 
@@ -171,16 +202,16 @@ public class Main{
         return chars;
     }
 
-    public static ArrayList<String> getPastJobs(String input){
+    public static ArrayList<Jobs> getPastJobs(String input){
         String trimmedString = input.replace("[","");
         trimmedString = trimmedString.replace("]","");
         trimmedString = trimmedString.replace("'","");
         trimmedString = trimmedString.trim();
         trimmedString = trimmedString.replace(" ","_");
         String[] jobList = trimmedString.split(";");
-        ArrayList<String> jobs = new ArrayList<String>();
+        ArrayList<Jobs> jobs = new ArrayList<Jobs>();
         for (int i =0;i < jobList.length;i++){
-            jobs.add(jobList[i]);
+            jobs.add(Jobs.valueOf(jobList[i]));
         }
         return jobs;
 
