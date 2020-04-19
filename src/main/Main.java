@@ -48,6 +48,10 @@ public class Main{
 
     }
 
+    public static void writeToFile(String fileName, ArrayList<OBAJWorker> inputList) throws IOException{
+        //TODO
+    }
+
     /**
      * Prompts the user to enter a new date for the system or keep the current date.
      */
@@ -135,36 +139,68 @@ public class Main{
         //System.out.println(workers.get(0));
         return workers;
     }
+
+    /**
+     * Updates every wokrer in the database, to be used when the date is changed or if working reasons are updated.
+     * @param inputArray
+     * @param time
+     * @return
+     */
     public static ArrayList<OBAJWorker> updateWorkersJobs(ArrayList<OBAJWorker> inputArray, Date time){
         ArrayList<OBAJWorker> updatedArray = inputArray;
-        for (OBAJWorker w: updatedArray){
+        for (OBAJWorker w: updatedArray) {
+            if (w.getLeaveReason() != "NA" && w.getCurrJob() != Jobs.NA){
+                ArrayList<Jobs> jobs = w.getPastJobs();
+                jobs.add(w.getCurrJob());
+                w.setPastJobs(jobs);
+                w.setCurrJob(Jobs.NA);
+                w.setStartCurrentDate(null);
+                w.setEndDate(time);
+            }
+            if (w.getCurrJob() == Jobs.NA) {
+                continue;
+            }
+            else{
             try {
-                Date currJobStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
+                Date workerStartHireDate = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
+                long diffInMilliesHireDate = Math.abs(time.getTime() - workerStartHireDate.getTime());
+                long diffHireDate = TimeUnit.DAYS.convert(diffInMilliesHireDate, TimeUnit.MILLISECONDS);
+
+                Date currJobStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartCurrentDate());
                 long diffInMillies = Math.abs(time.getTime() - currJobStart.getTime());
                 long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (diff/30 > w.getCurrJob().getEmployTime()){//Assuming 30 days in a month
+                while (diff / 30 > w.getCurrJob().getEmployTime() && diffHireDate <= 547.5) {//Assuming 30 days in a month
                     ArrayList<Jobs> prevJobs = w.getPastJobs();
                     prevJobs.add(w.getCurrJob());
                     w.setPastJobs(prevJobs);
                     w.setCurrJob(null);
-                    for (Jobs j: Jobs.values()){
-                        if (!w.getPastJobs().contains(j)){
+                    for (Jobs j : Jobs.values()) {//Finds a job that the worker hasn't done yet.
+                        if (!w.getPastJobs().contains(j)) {
+                            long newStartTime = (long) (currJobStart.getTime() + w.getCurrJob().getEmployTime()*2.628*Math.pow(10,9));
+                            Date newStartDate = new Date(newStartTime);
                             w.setCurrJob(j);
-                            w.setStartCurrentDate(time);//TODO may need to fix this
+                            w.setStartCurrentDate(newStartDate);
                             break;
                         }
                     }
-                    if (w.getCurrJob() == null){
+                    //If there are no more jobs that they can do, then they are done working.
+                    if (w.getCurrJob() == null) {
                         w.setCurrJob(Jobs.NA);
                         w.setStartCurrentDate(null);
+                        break;
                     }
+                    //Updates their new start time and updates the diff betweeen their start time and the current time
+                    currJobStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartCurrentDate());
+                    diffInMillies = Math.abs(time.getTime() - currJobStart.getTime());
+                    diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                 }
 
+                //Goes through to see if the worker has been working for over a year and 6 months and then lets them go if they have.
                 Date workerStart = new SimpleDateFormat("MM/dd/yyyy").parse(w.getStartWorkingDate());
                 diffInMillies = Math.abs(time.getTime() - workerStart.getTime());
                 diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (diff > 547.5){//547.5 is 1 year and 6 months
-                    long newTime = (long) (workerStart.getTime() + 4.7304*Math.pow(10,10));
+                if (diff > 547.5) {//547.5 is 1 year and 6 months
+                    long newTime = (long) (workerStart.getTime() + 4.7304 * Math.pow(10, 10));
                     Date endTime = new Date(newTime);
                     w.setEndDate(endTime);
                     ArrayList<Jobs> prevJobs = w.getPastJobs();
@@ -172,16 +208,17 @@ public class Main{
                     w.setPastJobs(prevJobs);
                     w.setCurrJob(Jobs.NA);
                 }
-                else{
+                else {
 
                 }
-            }
-            catch (ParseException p){
+            } catch (ParseException p) {
                 //TODO
             }
-
         }
+        }
+        return updatedArray;
     }
+
 
     public static ArrayList<Characteristics> getCharacteristics(String input){
         String trimmedString = input.trim();
