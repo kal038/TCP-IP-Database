@@ -126,6 +126,39 @@ public class OBAJWorker {
         return endDate;
     }
 
+    public String formatForCSV(){
+        String format = Integer.toString(getWorkerID()) + "," + getNationality() + "," + getDOB() + "," + getMaritalStatus() + "," +
+                Integer.toString(getNumberChildren()) + "," + getWorkReason().toString() + "," + formatCharacteristics() + "," +
+                formatWorkSkills() + "," + getLeaveReason() + "," + getCurrJob().toString() + "," + formatPreviousJobs() + "," +
+                getStartCurrentDate() + "," + getStartCurrentDate() + "," + getEndDate();
+        return format;
+    }
+
+    private String formatCharacteristics(){
+        String value = "";
+        for (Characteristics c: workerCharacteristics){
+            value = c.toString() + ";";
+        }
+        return value.substring(0,value.length()-1);
+    }
+
+    private String formatWorkSkills(){
+        String value = "";
+        for (WorkSkills w: workerSkill){
+            value = w.toString() + ";";
+        }
+        return value.substring(0,value.length()-1);
+    }
+
+    private String formatPreviousJobs(){
+        String value = "";
+        for (Jobs w: pastJobs){
+            value = w.toString() + ";";
+        }
+        return value.substring(0,value.length()-1);
+    }
+
+
     @Override
     public String toString() {
         return "OBAJWorker{" +

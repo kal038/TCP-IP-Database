@@ -1,5 +1,6 @@
 package main;
 
 public enum WorkingReasons {
-    BEHAVIOR, PARENTS, CULTURE, DEBT
+    BEHAVIOR, PARENTS, CULTURE, DEBT;
+
 }

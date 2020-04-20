@@ -22,10 +22,7 @@ package
 import com.sun.source.tree.ParenthesizedTree;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -49,7 +46,19 @@ public class Main{
     }
 
     public static void writeToFile(String fileName, ArrayList<OBAJWorker> inputList) throws IOException{
-        //TODO
+        try{
+            FileWriter writer = new FileWriter(fileName);
+            writer.write("Unique ID,Nationality,DOB,Marital Status,Number of Children,Work Reason, Characteristics," +
+                    "Work Skill,Reason for Leaving,Current Job,Previous Job,Start Date,Current Job Start Date,End Date");
+            for (OBAJWorker w: inputList){
+                writer.write(w.formatForCSV());
+                writer.write("\n");
+            }
+            writer.close();
+        }
+        catch (IOException e){
+
+        }
     }
 
     /**
@@ -244,7 +253,7 @@ public class Main{
         trimmedString = trimmedString.replace("]","");
         trimmedString = trimmedString.replace("'","");
         trimmedString = trimmedString.trim();
-        trimmedString = trimmedString.replace(" ","_");
+        trimmedString = trimmedString.replace("-","_");
         String[] jobList = trimmedString.split(";");
         ArrayList<Jobs> jobs = new ArrayList<Jobs>();
         for (int i =0;i < jobList.length;i++){
