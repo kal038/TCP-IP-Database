@@ -35,10 +35,14 @@ public class Database{
         this.outputFileName = outputFileName;
     }
 
+    public void addWorker(OBAJWorker w){
+        list.add(w);
+    }
+
     public void writeToFile(){
         try{
             FileWriter writer = new FileWriter(outputFileName,false);
-            writer.write("Unique ID,Nationality,DOB,Marital Status,Number of Children,Work Reason, Characteristics," +
+            writer.write("Unique ID,Nationality,DOB,Marital Status,Number of Children,Work Reason,Characteristics," +
                     "Work Skill,Reason for Leaving,Current Job,Previous Job,Start Date,Current Job Start Date,End Date");
             for (OBAJWorker w: list){
                 writer.write(w.formatForCSV());
@@ -56,32 +60,14 @@ public class Database{
      * @param fileName the name of the csv file
      */
     public ArrayList<OBAJWorker> readInFile(String fileName){
-        final String separator = ",";
         BufferedReader b = null;
         ArrayList<OBAJWorker> workers = new ArrayList<OBAJWorker>();
         try {
             b = new BufferedReader(new FileReader(fileName));
             String line;
-            String[] separatedValues;
             b.readLine();
             while ((line = b.readLine()) != null) {
-                line = line.replace("-","_");
-                separatedValues = line.split(separator);
-                int id = Integer.parseInt(separatedValues[0]);
-                String nat = separatedValues[1];
-                String dob = separatedValues[2];
-                String marit = separatedValues[3];
-                int numChild = Integer.parseInt(separatedValues[4]);
-                WorkingReasons work = WorkingReasons.valueOf(separatedValues[5]);
-                ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
-                ArrayList<WorkSkills> workSkills = getWorkSkills(separatedValues[7]);
-                String leaveReason = separatedValues[8];
-                Jobs currJob = Jobs.valueOf(separatedValues[9]);
-                ArrayList<Jobs> pastJobs = getPastJobs(separatedValues[10]);
-                String startDate = separatedValues[11];
-                String startCurrentDate = separatedValues[12];
-                String endDate = separatedValues[13];
-                workers.add(new OBAJWorker(id,nat,dob,marit,numChild,work,chars,workSkills,leaveReason,currJob,pastJobs,startDate,startCurrentDate,endDate));
+                workers.add(parseLineIntoWorker(line));
             }
 
         }
@@ -91,7 +77,6 @@ public class Database{
         catch (IOException e){
             System.out.println("IO exception");
         }
-
         finally{
             if (b != null){
                 try {
@@ -103,6 +88,33 @@ public class Database{
         }
         //System.out.println(workers.get(0));
         return workers;
+    }
+
+    /**
+     * Takes a line from a csv file and converts it into a worker object.
+     * @param input
+     * @return
+     */
+    public static OBAJWorker parseLineIntoWorker(String input){
+        final String separator = ",";
+        String separatedValues[];
+        String line = input.replace("-","_");
+        separatedValues = line.split(separator);
+        int id = Integer.parseInt(separatedValues[0]);
+        String nat = separatedValues[1];
+        String dob = separatedValues[2];
+        String marit = separatedValues[3];
+        int numChild = Integer.parseInt(separatedValues[4]);
+        WorkingReasons work = WorkingReasons.valueOf(separatedValues[5]);
+        ArrayList<Characteristics> chars = getCharacteristics(separatedValues[6]);
+        ArrayList<WorkSkills> workSkills = getWorkSkills(separatedValues[7]);
+        String leaveReason = separatedValues[8];
+        Jobs currJob = Jobs.valueOf(separatedValues[9]);
+        ArrayList<Jobs> pastJobs = getPastJobs(separatedValues[10]);
+        String startDate = separatedValues[11];
+        String startCurrentDate = separatedValues[12];
+        String endDate = separatedValues[13];
+        return new OBAJWorker(id,nat,dob,marit,numChild,work,chars,workSkills,leaveReason,currJob,pastJobs,startDate,startCurrentDate,endDate);
     }
 
     /**

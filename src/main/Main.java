@@ -19,7 +19,6 @@
 package
         main;
 
-
 import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.text.ParseException;
@@ -29,11 +28,12 @@ import java.util.Date;
 public class Main{
     Database[] dbs = new Database[3];//Hold three databases so we can undo changes.
     int index = 1;//Points to which database should be modified and where the next save occurs
+    int undosLeft = 3;
     public void main(String[] args) {
 
-        dbs[0] = new Database("defDB.csv","database0.csv");
-        dbs[1] = new Database("defDB.csv","database1.csv");
-        dbs[2] = new Database("defDB.csv","database2.csv");
+        dbs[0] = new Database("defDB.csv","newDB.csv");
+        dbs[1] = new Database("defDB.csv","newDB.csv");
+        dbs[2] = new Database("defDB.csv","newDB.csv");
         try {
             String inputDate = getDate();
             System.out.println(inputDate);
@@ -44,17 +44,64 @@ public class Main{
 
     }
 
-    public void saveDatabase(){
-        dbs[index].writeToFile();
+    /**
+     * Prompts the user to enter a new worker to be added to the database
+     * @return
+     */
+    private String promptForNewWorker(){
+        String input = JOptionPane.showInputDialog("Please enter the new worker's information in this format:"+
+                "Unique ID,Nationality,DOB,Marital Status,Number of Children,Work Reason,Characteristics," +
+                "Work Skill,Reason for Leaving,Current Job,Previous Job,Start Date,Current Job Start Date,End Date");
+        return input;
+    }
+
+    /**
+     * Adds a worker to the current database
+     * @param input
+     */
+    private void addWorkerToDB(String input){
+        OBAJWorker newWorker = Database.parseLineIntoWorker(input);
+        dbs[index].addWorker(newWorker);
+        incrementIndex();
+        incrementUndos();
+    }
+
+    private void incrementIndex(){
         index++;
         index = index%3;
+    }
+
+    private void incrementUndos(){
+        if (undosLeft == 3){
+            //Do nothing
+        }
+        else{
+            undosLeft++;
+        }
+    }
+
+    public void saveDatabase(){
+        dbs[index].writeToFile();
+        //index++;
+        //index = index%3;
+    }
+
+    private void undoChange(){
+        if (undosLeft <= 0){
+            //TODO tell the user they can't go back any further
+        }
+        else{
+            index--;
+            index = index%3;
+            undosLeft--;
+        }
     }
 
 
     /**
      * Prompts the user to enter a new date for the system or keep the current date.
      */
-    public static String getDate(){
+    private static String getDate(){
         Object[] options = {"Use system time","Input future time"};
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date sysTime = new Date();
