@@ -21,6 +21,7 @@ package
 
 import javax.swing.*;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -248,7 +249,7 @@ public class Database{
     /**
      * This is a query function that takes in an ArrayList of Workers and an ArrayList of characteristics that we have to query for
      * I loop through the ArrayList of workers and match them with the input criteria
-     * @param queries (int), workerArrayList (ArrayList<OBAJWorker>), characteristics (String, comma seperated)
+     * @param queries (int), workerArrayList (ArrayList<OBAJWorker>), characteristics (String, comma seperated requires a helper function to parse the input)
      * @return  queryResults an ArrayList of Worker objects that matches the query characteristics
      */
     public ArrayList<OBAJWorker> queryWorker( int queries, ArrayList<String> characteristics ) {
@@ -260,27 +261,107 @@ public class Database{
 
             for (OBAJWorker worker : list) {
 
+                while (queries > 0) {
+                    boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
+
+                    for (int i = 0; i < characteristics.size(); i++) {
+                        String[] tmp = characteristics.get(i).strip().split(":");
+                        String field = tmp[0];
+                        String fieldResult = tmp[1];
+                        String resultToBeCompared = new String();
+                        if (field.equalsIgnoreCase("MaritalStatus")) {
+                            resultToBeCompared = worker.getMaritalStatus();
+                        } else if (field.equalsIgnoreCase("Nationality")) {
+                            resultToBeCompared = worker.getNationality();
+                        } else if (field.equalsIgnoreCase("DOB")) {
+                            resultToBeCompared = worker.getDOB();
+                        } else if (field.equalsIgnoreCase("StartDate")) {
+                            resultToBeCompared = worker.getStartWorkingDate();
+                        } else System.out.println("Criteria Not Found");
+                        if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {
+                            matchingWorker = true;
+                        } else matchingWorker = false;
+
+                    }
+
+                    if (matchingWorker == true) {
+                        queryResults.add(worker);
+                    }
+                    queries--;
+                }
+            }
+
+
+        return queryResults;
+    }
+
+
+    /**
+     * Same method as above overloading to have a default Maximum value of 50 queries
+     * @return queryResults, an ArrayList of qualifying workers
+     */
+    public ArrayList<OBAJWorker> queryWorker( ArrayList<String> characteristics ) {
+        ArrayList<OBAJWorker> queryResults = new ArrayList<OBAJWorker>(); // this is the resulting ArrayList to be returned containing workers that matches the criteria
+        int MAXIMUM = 50;
+
+
+        // Now loop through the list of workers
+
+        for (OBAJWorker worker : list) {
+
+            while (MAXIMUM > 0) {
                 boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
 
                 for (int i = 0; i < characteristics.size(); i++) {
                     String[] tmp = characteristics.get(i).strip().split(":");
                     String field = tmp[0];
                     String fieldResult = tmp[1];
-                String resultToBeCompared = new String();
-                if (field.equalsIgnoreCase("MaritalStatus")) {resultToBeCompared = worker.getMaritalStatus();}
-                else if (field.equalsIgnoreCase("Nationality")) {resultToBeCompared = worker.getNationality();}
-                else if (field.equalsIgnoreCase("DOB")) {resultToBeCompared = worker.getDOB();}
-                else if (field.equalsIgnoreCase("StartDate")) {resultToBeCompared = worker.getStartWorkingDate();}
-                else System.out.println("Criteria Not Found");
-                if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {matchingWorker = true;}
-                else matchingWorker = false;
+                    String resultToBeCompared = new String();
+                    if (field.equalsIgnoreCase("MaritalStatus")) {
+                        resultToBeCompared = worker.getMaritalStatus();
+                    } else if (field.equalsIgnoreCase("Nationality")) {
+                        resultToBeCompared = worker.getNationality();
+                    } else if (field.equalsIgnoreCase("DOB")) {
+                        resultToBeCompared = worker.getDOB();
+                    } else if (field.equalsIgnoreCase("StartDate")) {
+                        resultToBeCompared = worker.getStartWorkingDate();
+                    } else System.out.println("Criteria Not Found"); // TODO: An error handler to handle this criteria not found case
+                    if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {
+                        matchingWorker = true;
+                    } else matchingWorker = false;
 
                 }
 
-                if (matchingWorker == true) {queryResults.add(worker);}
+                if (matchingWorker == true) {
+                    queryResults.add(worker);
+                }
+                MAXIMUM--;
             }
+        }
 
 
         return queryResults;
     }
+
+    /**
+     * @return the input to query worker, well parsed to fit the format that the function needs. Example : ["Marital Status: Married","Nationality: German"]
+     */
+    public static ArrayList<String> queryInputHelper () {
+        ArrayList<String> inputToQuery = new ArrayList<String>();
+        // Prompt for the number of input from the user
+        System.out.printf("How many criteria do you want to query. Choose 1, 2, or 3: ");
+        Scanner in = new Scanner(System.in);
+        int numCriteria = Integer.parseInt(in.next().strip());
+        for (int i = 0 ; i < numCriteria; i++) {
+            System.out.printf("Specify the criteria that you want to query for: ");
+            String field = in.next();
+            System.out.println("Specify the result of that criteria: ");
+            String fieldResult = in.next();
+            String inputString = String.format(field+":"+fieldResult);
+            inputToQuery.add(inputString);
+        }
+        return inputToQuery;
+    }
+
+
 }
