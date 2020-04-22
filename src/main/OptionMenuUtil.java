@@ -21,7 +21,7 @@ package
 
 import java.util.Scanner;
 
-public class OptionMenuUtil {
+public final class OptionMenuUtil {
 
     public static void printMenu() {
         System.out.println("Welcome to the database explorer!");
