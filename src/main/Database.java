@@ -249,7 +249,7 @@ public class Database{
     /**
      * This is a query function that takes in an ArrayList of Workers and an ArrayList of characteristics that we have to query for
      * I loop through the ArrayList of workers and match them with the input criteria
-     * @param queries (int), workerArrayList (ArrayList<OBAJWorker>), characteristics (String, comma seperated requires a helper function to parse the input)
+     * @param queries (int),  characteristics (ArrayList<String></String>, comma-separated, requires a helper function to parse the input)
      * @return  queryResults an ArrayList of Worker objects that matches the query characteristics
      */
     public ArrayList<OBAJWorker> queryWorker( int queries, ArrayList<String> characteristics ) {
