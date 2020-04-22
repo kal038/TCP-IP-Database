@@ -46,8 +46,5 @@ public final class OptionMenuUtil {
 
 
     }
-
-    public static void main(String[] args) {
-        printMenu();
-    }
+    
 }
