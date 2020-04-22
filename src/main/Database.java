@@ -41,6 +41,10 @@ public class Database{
         list.add(w);
     }
 
+    public OBAJWorker getWorker(int index){
+        return list.get(index);
+    }
+
     public void writeToFile(){
         try{
             FileWriter writer = new FileWriter(outputFileName,false);
@@ -121,13 +125,11 @@ public class Database{
 
     /**
      * Updates every wokrer in the database, to be used when the date is changed or if working reasons are updated.
-     * @param inputArray
      * @param time
      * @return
      */
-    public static ArrayList<OBAJWorker> updateWorkersJobs(ArrayList<OBAJWorker> inputArray, Date time){
-        ArrayList<OBAJWorker> updatedArray = inputArray;
-        for (OBAJWorker w: updatedArray) {
+    public ArrayList<OBAJWorker> updateWorkersJobs(Date time){
+        for (OBAJWorker w: list) {
             if (w.getLeaveReason() != "NA" && w.getCurrJob() != Jobs.NA){
                 ArrayList<Jobs> jobs = w.getPastJobs();
                 jobs.add(w.getCurrJob());
@@ -195,10 +197,10 @@ public class Database{
             }
         }
         }
-        return updatedArray;
+        return list;
     }
 
-    public static ArrayList<Characteristics> getCharacteristics(String input){
+    private static ArrayList<Characteristics> getCharacteristics(String input){
         String trimmedString = input.trim();
         trimmedString = trimmedString.replace("[","");
         trimmedString = trimmedString.replace("]","");
@@ -217,7 +219,7 @@ public class Database{
         return chars;
     }
 
-    public static ArrayList<Jobs> getPastJobs(String input){
+    private static ArrayList<Jobs> getPastJobs(String input){
         String trimmedString = input.replace("[","");
         trimmedString = trimmedString.replace("]","");
         trimmedString = trimmedString.replace("'","");
@@ -233,7 +235,7 @@ public class Database{
 
     }
 
-    public static ArrayList<WorkSkills> getWorkSkills(String input){
+    private static ArrayList<WorkSkills> getWorkSkills(String input){
         String trimmedString = input.replace("[","");
         trimmedString = trimmedString.replace("]","");
         trimmedString = trimmedString.replace("'","");

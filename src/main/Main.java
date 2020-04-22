@@ -20,27 +20,58 @@ package
         main;
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import javax.xml.crypto.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Main{
-    Database[] dbs = new Database[3];//Hold three databases so we can undo changes.
-    int index = 1;//Points to which database should be modified and where the next save occurs
-    int undosLeft = 3;
-    public void main(String[] args) {
+    static OptionMenuUtil options = new OptionMenuUtil();
+    static Database[] dbs = new Database[3];//Hold three databases so we can undo changes.
+    static int index = 1;//Points to which database should be modified
+    static int undosLeft = 3;
+    public static void main(String[] args) {
 
         dbs[0] = new Database("defDB.csv","newDB.csv");
         dbs[1] = new Database("defDB.csv","newDB.csv");
         dbs[2] = new Database("defDB.csv","newDB.csv");
         try {
             String inputDate = getDate();
-            System.out.println(inputDate);
+            Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(inputDate);
+            dbs[index].updateWorkersJobs(date1);
+            //System.out.println(dbs[index].getWorker(51).toString());
+            int action = options.printMenu();
+            while (action != 0){
+                switch (action){
+                    case 1:
+                        ArrayList<String> chars = Database.queryInputHelper();
+                        System.out.println(chars);
+                        ArrayList<OBAJWorker> answer = dbs[index].queryWorker(chars);
+                        System.out.println(answer);
+                        for (OBAJWorker w: answer){
+                            System.out.println(w.toString());
+                        }
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        undoChange();
+                        break;
+                    case 5:
+                        saveDatabase();
+                        break;
+                }
+                action = options.printMenu();
+            }
         }
-        catch (NullPointerException e){
+        catch (NullPointerException | ParseException e){
             System.out.println("Goodbye");
         }
+
 
     }
 
@@ -48,7 +79,7 @@ public class Main{
      * Prompts the user to enter a new worker to be added to the database
      * @return
      */
-    private String promptForNewWorker(){
+    private static String promptForNewWorker(){
         String input = JOptionPane.showInputDialog("Please enter the new worker's information in this format:"+
                 "Unique ID,Nationality,DOB,Marital Status,Number of Children,Work Reason,Characteristics," +
                 "Work Skill,Reason for Leaving,Current Job,Previous Job,Start Date,Current Job Start Date,End Date");
@@ -59,19 +90,19 @@ public class Main{
      * Adds a worker to the current database
      * @param input
      */
-    private void addWorkerToDB(String input){
+    private static void addWorkerToDB(String input){
         OBAJWorker newWorker = Database.parseLineIntoWorker(input);
         dbs[index].addWorker(newWorker);
         incrementIndex();
         incrementUndos();
     }
 
-    private void incrementIndex(){
+    private static void incrementIndex(){
         index++;
         index = index%3;
     }
 
-    private void incrementUndos(){
+    private static void incrementUndos(){
         if (undosLeft == 3){
             //Do nothing
         }
@@ -80,13 +111,13 @@ public class Main{
         }
     }
 
-    public void saveDatabase(){
+    public static void saveDatabase(){
         dbs[index].writeToFile();
         //index++;
         //index = index%3;
     }
 
-    private void undoChange(){
+    private static void undoChange(){
         if (undosLeft <= 0){
             //TODO tell the user they can't go back any further
         }
