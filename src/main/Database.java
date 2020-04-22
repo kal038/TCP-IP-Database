@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Database{
@@ -242,5 +243,44 @@ public class Database{
             skillArray.add(WorkSkills.valueOf(skills[i]));
         }
         return skillArray;
+    }
+
+    /**
+     * This is a query function that takes in an ArrayList of Workers and an ArrayList of characteristics that we have to query for
+     * I loop through the ArrayList of workers and match them with the input criteria
+     * @param queries (int), workerArrayList (ArrayList<OBAJWorker>), characteristics (String, comma seperated)
+     * @return  queryResults an ArrayList of Worker objects that matches the query characteristics
+     */
+    public ArrayList<OBAJWorker> queryWorker( int queries, ArrayList<String> characteristics ) {
+        ArrayList<OBAJWorker> queryResults = new ArrayList<OBAJWorker>(); // this is the resulting ArrayList to be returned containing workers that matches the criteria
+
+
+
+            // Now loop through the list of workers
+
+            for (OBAJWorker worker : list) {
+
+                boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
+
+                for (int i = 0; i < characteristics.size(); i++) {
+                    String[] tmp = characteristics.get(i).strip().split(":");
+                    String field = tmp[0];
+                    String fieldResult = tmp[1];
+                String resultToBeCompared = new String();
+                if (field.equalsIgnoreCase("MaritalStatus")) {resultToBeCompared = worker.getMaritalStatus();}
+                else if (field.equalsIgnoreCase("Nationality")) {resultToBeCompared = worker.getNationality();}
+                else if (field.equalsIgnoreCase("DOB")) {resultToBeCompared = worker.getDOB();}
+                else if (field.equalsIgnoreCase("StartDate")) {resultToBeCompared = worker.getStartWorkingDate();}
+                else System.out.println("Criteria Not Found");
+                if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {matchingWorker = true;}
+                else matchingWorker = false;
+
+                }
+
+                if (matchingWorker == true) {queryResults.add(worker);}
+            }
+
+
+        return queryResults;
     }
 }

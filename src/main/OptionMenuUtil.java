@@ -40,8 +40,14 @@ public class OptionMenuUtil {
         System.out.println("5: Save Changes");
         System.out.println("0: Exit Application");
         // user's choice
+        System.out.printf("Please choose an option above: ");
         String usersChoice = in.nextLine();
+        System.out.println("You have chosen option "+usersChoice);
 
 
+    }
+
+    public static void main(String[] args) {
+        printMenu();
     }
 }
