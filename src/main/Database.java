@@ -260,10 +260,10 @@ public class Database{
 
 
             // Now loop through the list of workers
-
+            while (queries > 0) {
             for (OBAJWorker worker : list) {
 
-                while (queries > 0) {
+
                     boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
 
                     for (int i = 0; i < characteristics.size(); i++) {
@@ -287,9 +287,10 @@ public class Database{
                     }
 
                     if (matchingWorker == true) {
+                        queries--;
                         queryResults.add(worker);
                     }
-                    queries--;
+
                 }
             }
 
@@ -306,12 +307,12 @@ public class Database{
         ArrayList<OBAJWorker> queryResults = new ArrayList<OBAJWorker>(); // this is the resulting ArrayList to be returned containing workers that matches the criteria
         int MAXIMUM = 50;
 
-
+        System.out.println(list.size());
         // Now loop through the list of workers
+        while (MAXIMUM > 0) {
+            for (OBAJWorker worker : list) {
+                //System.out.println(worker.getNationality());
 
-        for (OBAJWorker worker : list) {
-
-            while (MAXIMUM > 0) {
                 boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
 
                 for (int i = 0; i < characteristics.size(); i++) {
@@ -327,21 +328,22 @@ public class Database{
                         resultToBeCompared = worker.getDOB();
                     } else if (field.equalsIgnoreCase("StartDate")) {
                         resultToBeCompared = worker.getStartWorkingDate();
-                    } else System.out.println("Criteria Not Found"); // TODO: An error handler to handle this criteria not found case
+                    } else
+                        System.out.println("Criteria Not Found"); // TODO: An error handler to handle this criteria not found case
                     if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {
                         matchingWorker = true;
                     } else matchingWorker = false;
 
                 }
-
+                System.out.println(worker.getNationality());
                 if (matchingWorker == true) {
+                    MAXIMUM--;
                     queryResults.add(worker);
                 }
-                MAXIMUM--;
+
             }
+
         }
-
-
         return queryResults;
     }
 
@@ -365,5 +367,11 @@ public class Database{
         return inputToQuery;
     }
 
-
+    @Override
+    public String toString() {
+        return "Database{" +
+                "list=" + list +
+                ", outputFileName='" + outputFileName + '\'' +
+                '}';
+    }
 }

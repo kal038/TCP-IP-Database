@@ -48,7 +48,8 @@ public class Main{
                     case 1:
                         ArrayList<String> chars = Database.queryInputHelper();
                         System.out.println(chars);
-                        ArrayList<OBAJWorker> answer = dbs[index].queryWorker(chars);
+                        //System.out.println(dbs[index].getWorker(0));
+                        ArrayList<OBAJWorker> answer = dbs[index].queryWorker( 10, chars);
                         System.out.println(answer);
                         for (OBAJWorker w: answer){
                             System.out.println(w.toString());
