@@ -41,16 +41,14 @@ public class Main{
             String inputDate = getDate();
             Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(inputDate);
             dbs[index].updateWorkersJobs(date1);
-            //System.out.println(dbs[index].getWorker(51).toString());
             int action = options.printMenu();
             while (action != 0){
                 switch (action){
                     case 1:
                         ArrayList<String> chars = Database.queryInputHelper();
-                        System.out.println(chars);
-                        //System.out.println(dbs[index].getWorker(0));
-                        ArrayList<OBAJWorker> answer = dbs[index].queryWorker( 10, chars);
-                        System.out.println(answer);
+                        int numberOfWorkers = Database.queryNumberHelper();
+                        ArrayList<OBAJWorker> answer = dbs[index].queryWorker(11,chars);
+                        System.out.println(answer.size());
                         for (OBAJWorker w: answer){
                             System.out.println(w.toString());
                         }

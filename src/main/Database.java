@@ -256,15 +256,17 @@ public class Database{
      */
     public ArrayList<OBAJWorker> queryWorker( int queries, ArrayList<String> characteristics ) {
         ArrayList<OBAJWorker> queryResults = new ArrayList<OBAJWorker>(); // this is the resulting ArrayList to be returned containing workers that matches the criteria
-
+        int queriesLeft = queries;
 
 
             // Now loop through the list of workers
-            while (queries > 0) {
-            for (OBAJWorker worker : list) {
 
+            for (OBAJWorker worker : list) {
+                if (queriesLeft <= 0)
+                    break;
 
                     boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
+                    boolean failure = false;
 
                     for (int i = 0; i < characteristics.size(); i++) {
                         String[] tmp = characteristics.get(i).strip().split(":");
@@ -279,20 +281,21 @@ public class Database{
                             resultToBeCompared = worker.getDOB();
                         } else if (field.equalsIgnoreCase("StartDate")) {
                             resultToBeCompared = worker.getStartWorkingDate();
-                        } else System.out.println("Criteria Not Found");
+                        } else {}
                         if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {
-                            matchingWorker = true;
-                        } else matchingWorker = false;
+                            //Do nothing
+                        } else
+                            failure = true;
 
                     }
 
-                    if (matchingWorker == true) {
-                        queries--;
+                    if (!failure) {
+                        queriesLeft--;
                         queryResults.add(worker);
                     }
 
                 }
-            }
+
 
 
         return queryResults;
@@ -309,16 +312,20 @@ public class Database{
 
         System.out.println(list.size());
         // Now loop through the list of workers
-        while (MAXIMUM > 0) {
             for (OBAJWorker worker : list) {
+                if (MAXIMUM <= 0)
+                    break;
                 //System.out.println(worker.getNationality());
 
                 boolean matchingWorker = false; // a flag to determine if the worker matches the criteria of the query
+                boolean failure = false;
 
                 for (int i = 0; i < characteristics.size(); i++) {
                     String[] tmp = characteristics.get(i).strip().split(":");
                     String field = tmp[0];
+                    System.out.println(field);
                     String fieldResult = tmp[1];
+                    System.out.println(fieldResult);
                     String resultToBeCompared = new String();
                     if (field.equalsIgnoreCase("MaritalStatus")) {
                         resultToBeCompared = worker.getMaritalStatus();
@@ -328,22 +335,28 @@ public class Database{
                         resultToBeCompared = worker.getDOB();
                     } else if (field.equalsIgnoreCase("StartDate")) {
                         resultToBeCompared = worker.getStartWorkingDate();
-                    } else
+                    } else {
                         System.out.println("Criteria Not Found"); // TODO: An error handler to handle this criteria not found case
+                    }
                     if (resultToBeCompared.equalsIgnoreCase(fieldResult)) {
                         matchingWorker = true;
-                    } else matchingWorker = false;
+                    } else{
+                        matchingWorker = false;
+                        failure = true;
+                        break;
+                    }
 
                 }
-                System.out.println(worker.getNationality());
-                if (matchingWorker == true) {
+                //if (matchingWorker == true) {
+                if (!failure){
                     MAXIMUM--;
                     queryResults.add(worker);
                 }
+                else
+                    break;
 
             }
 
-        }
         return queryResults;
     }
 
@@ -357,14 +370,30 @@ public class Database{
         Scanner in = new Scanner(System.in);
         int numCriteria = Integer.parseInt(in.next().strip());
         for (int i = 0 ; i < numCriteria; i++) {
-            System.out.printf("Specify the criteria that you want to query for: ");
+            System.out.printf("Specify the criteria that you want to query for(Nationality,MaritalStatus,DOB,StartDate): ");
             String field = in.next();
-            System.out.println("Specify the result of that criteria: ");
+            System.out.println("Specify the result of that criteria(i.e. Italian,Married,06/09/1999,04/22/2020): ");
             String fieldResult = in.next();
             String inputString = String.format(field+":"+fieldResult);
             inputToQuery.add(inputString);
         }
         return inputToQuery;
+    }
+
+    public static int queryNumberHelper(){
+        System.out.println("How many results would you like to see, the max number is 100 and the default is 50");
+        Scanner in = new Scanner(System.in);
+        try {
+            int num = Integer.parseInt(in.next().strip());
+            if (num > 0 && num <= 100)
+                return num;
+            else
+                return 50;
+        }
+        catch (NumberFormatException e){
+            return 50;
+        }
+
     }
 
     @Override
