@@ -45,6 +45,27 @@ public class Main{
      * Users can save changes to a new csv called dbSave.csv
      */
     public static void main(String[] args) {
+        System.out.println("Do you want to run the program in Server/Client mode [Y|N]: ");
+        Scanner in = new Scanner(System.in);
+        String answer = in.next().strip();
+        if (answer.equalsIgnoreCase("N")) {
+            runNormal();
+        } else {
+            //TODO: Run in Server and Client Mode
+            System.out.println("Are you running this instance in Server ot Client mode? [S|C]: ");
+            String serverOrClient = in.next().strip();
+            if (serverOrClient.equalsIgnoreCase("S")) {
+                //TODO: Run in Server Mode
+                } else {
+                //TODO: Run in Client Mode
+            }
+            }
+        }
+
+
+    
+
+    private static void runNormal() {
         String fileName = getFile();
         db = new Database(fileName);
         try {
@@ -103,8 +124,6 @@ public class Main{
         catch (NullPointerException | ParseException e){
             System.out.println("Goodbye");
         }
-
-
     }
 
     /**
@@ -113,7 +132,9 @@ public class Main{
     private static String getFile(){
         System.out.println("Please enter a filename or the default file will be used:");
         Scanner in = new Scanner(System.in);
-        return in.next().strip();
+        String fileName = in.nextLine();
+        if (fileName.equals("")) {return "defDB.csv";}
+        return fileName;
     }
 
     /**
