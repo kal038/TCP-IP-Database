@@ -29,31 +29,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class DatabaseServer {
-    public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("Usage: java DatabaseServer <port>");
-            System.exit(1);
-        }
-
-        int port = Integer.parseInt(args[0]);
-
+    public DatabaseServer(int portNumber) throws IOException {
         try (
                 // initialize server side Socket
-                ServerSocket DatabaseServerSocket = new ServerSocket(port);
+                ServerSocket DatabaseServerSocket = new ServerSocket(portNumber);
                 // accept client side connection
                 Socket  DatabaseClientSocket = DatabaseServerSocket.accept();
                 PrintWriter out = new PrintWriter(DatabaseClientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(DatabaseClientSocket.getInputStream()));
-                ) {
-                String input = "";
-                while (in.readLine() != null) {
-                    try {
-                        input = in.readLine();
-                        out.println(input);
-                    } catch (IOException i) {
-                        out.println(i);
-                    }
+        ) {
+            String input = "";
+            while (in.readLine() != null) {
+                try {
+                    input = in.readLine();
+                    out.println(input);
+                } catch (IOException i) {
+                    out.println(i);
                 }
+            }
         }
     }
+
 }

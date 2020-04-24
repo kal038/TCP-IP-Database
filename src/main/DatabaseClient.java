@@ -19,16 +19,21 @@
 package
         main;
 
+import java.io.*;
+import java.net.Socket;
+
 public class DatabaseClient {
-    public static void main(String[] args) {
-        // The program must take in 2 command-line arguments
-        if (args.length != 2) {
-            System.err.println("Usage: java DatabaseClient <hostname> <port>");
-            System.exit(1);
+
+
+    public DatabaseClient(String hostName, int portNumber) throws IOException {
+        try(
+                Socket clientSocket = new Socket(hostName, portNumber);
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
+                ) {
+
         }
-        // Record the hostname and port number
-        String hostname = args[0];
-        int port = Integer.parseInt(args[1]);
-        // try-with resource statement to connect to a Socket
     }
+
+
 }

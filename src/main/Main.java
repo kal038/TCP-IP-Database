@@ -20,6 +20,7 @@ package
         main;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,19 +52,46 @@ public class Main{
         if (answer.equalsIgnoreCase("N")) {
             runNormal();
         } else {
-            //TODO: Run in Server and Client Mode
+            
             System.out.println("Are you running this instance in Server ot Client mode? [S|C]: ");
             String serverOrClient = in.next().strip();
+            String hostName;
+            System.out.println("Please specify port number: ");
+            int portNumber = Integer.parseInt(in.next().strip());
             if (serverOrClient.equalsIgnoreCase("S")) {
-                //TODO: Run in Server Mode
+                //Running program in Server Mode
+                System.out.println("Running the program as Server");
+                try {
+                    DatabaseServer server = new DatabaseServer(portNumber);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Running the program in Client Mode
+                System.out.println("Running the program as Client");
+
+                System.out.println("Do you want to run on localhost? [Y|N]: ");
+                String localHostAns = in.next().strip();
+                if (localHostAns.equalsIgnoreCase("Y")) {
+                    hostName = "127.0.0.1";
                 } else {
-                //TODO: Run in Client Mode
+                    System.out.println("Provide host IP Address: ");
+                    hostName = in.next().strip();
+                }
+                // Start the Client
+                try {
+                    System.out.println("Establishing Connection to Server");
+                    DatabaseClient client = new DatabaseClient(hostName,portNumber);
+                    System.out.printf("Connection Established");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             }
         }
 
 
-    
+
 
     private static void runNormal() {
         String fileName = getFile();
