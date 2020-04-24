@@ -21,8 +21,15 @@ package
 
 import java.util.Scanner;
 
+/**
+ * Class that is used to display the menu for the db
+ */
 public final class OptionMenuUtil {
 
+    /**
+     * Prints the menu that shows the user what functions they can do with the database
+     * @return
+     */
     public int printMenu() {
         System.out.println("Welcome to the database explorer!");
         /**
