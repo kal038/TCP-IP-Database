@@ -367,6 +367,41 @@ public class Database{
         return inputToQuery;
     }
 
+    public static ArrayList<OBAJWorker> sortWorkersByDate (ArrayList<OBAJWorker> myList) {
+        //TODO: Implement This
+        return myList;
+    }
+
+    public static ArrayList<OBAJWorker> sortWorkersByString(ArrayList<OBAJWorker> myList)  {
+        //TODO: Implement This
+        return myList;
+    }
+
+    public static  ArrayList<OBAJWorker> sortWorkersByInt(ArrayList<OBAJWorker> myList) {
+        //TODO: Implement this
+        return myList;
+    }
+
+    public static ArrayList<OBAJWorker> sortWorkersHelper (ArrayList<OBAJWorker> myList) {
+        // TODO: Sort of a COPY of the database not on the database to avoid confusion
+        System.out.println("Specify the criteria you want to sort the database on?");
+        System.out.println("Available criteria: DOB, Start Date, Current Job Start Date, End Date, Worker ID, Nationality");
+        Scanner in = new Scanner(System.in);
+        String criteria =in.next().strip();
+        if (criteria.equalsIgnoreCase("DOB") || criteria.equalsIgnoreCase("StartDate") || criteria.equalsIgnoreCase("CurrentJobStartDate") || criteria.equalsIgnoreCase(
+                "EndDate"
+        )) {
+            return sortWorkersByDate(myList);
+        } else if (criteria.equalsIgnoreCase("WorkerID")) {
+            return sortWorkersByInt(myList);
+        } else if (criteria.equalsIgnoreCase("Nationality")) {
+            return sortWorkersByString(myList);
+        } else {
+            System.out.println("Invalid Criteria, Please Try Again");
+            return myList;
+        }
+    }
+
     @Override
     public String toString() {
         return "Database{" +
