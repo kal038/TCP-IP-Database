@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Main{
     static OptionMenuUtil options = new OptionMenuUtil();
@@ -33,7 +34,19 @@ public class Main{
     static int index = 1;//Points to which database should be modified
     static int undosLeft = 3;
     public static void main(String[] args) {
+        System.out.println("Do you want to run the program on Server/Client mode [Y|N]: ");
+        Scanner in = new Scanner(System.in);
+        String answer = in.nextLine().strip();
+        if (answer.equalsIgnoreCase("N")) {
+            runNormal();
+        } else {
+            // TODO: Run in Server Client Mode
+        }
 
+
+    }
+
+    private static void runNormal() {
         dbs[0] = new Database("defDB.csv","newDB.csv");
         dbs[1] = new Database("defDB.csv","newDB.csv");
         dbs[2] = new Database("defDB.csv","newDB.csv");
@@ -72,8 +85,6 @@ public class Main{
         catch (NullPointerException | ParseException e){
             System.out.println("Goodbye");
         }
-
-
     }
 
     /**
