@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Class representing a worker in the database
+ */
 public class OBAJWorker {
     /** A unique ID number */
     private int workerID;
@@ -126,6 +129,11 @@ public class OBAJWorker {
         return endDate;
     }
 
+    /**
+     * Takes the information for a worker and converts it to a string in csv format.
+     * Used to store the database in a csv file
+     * @return
+     */
     public String formatForCSV(){
         String format = Integer.toString(getWorkerID()) + "," + getNationality() + "," + getDOB() + "," + getMaritalStatus() + "," +
                 Integer.toString(getNumberChildren()) + "," + getWorkReason().toString() + "," + formatCharacteristics() + "," +
@@ -134,6 +142,10 @@ public class OBAJWorker {
         return format;
     }
 
+    /**
+     * Formats the characteristics so they can be put in a csv
+     * @return a string representing the characteristics
+     */
     private String formatCharacteristics(){
         String value = "";
         for (Characteristics c: workerCharacteristics){
@@ -142,6 +154,10 @@ public class OBAJWorker {
         return value.substring(0,value.length()-1);
     }
 
+    /**
+     *Formats the work skills so they can be put in a csv
+     * @return a string representing the work skills
+     */
     private String formatWorkSkills(){
         String value = "";
         for (WorkSkills w: workerSkill){
@@ -150,6 +166,10 @@ public class OBAJWorker {
         return value.substring(0,value.length()-1);
     }
 
+    /**
+     * Formats the previous jobs so they can be put in a csv
+     * @return a string representing the previous jobs
+     */
     private String formatPreviousJobs(){
         String value = "";
         for (Jobs w: pastJobs){
@@ -182,12 +202,23 @@ public class OBAJWorker {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         endDate = formatter.format(newDate);
     }
+    public void setEndDateWithString(String date){
+        endDate = date;
+    }
+    public void setStartCurrentDateWithString(String date){
+        startCurrentDate = date;
+    }
     public void setCurrJob(Jobs input){
         currJob = input;
     }
     public void setPastJobs(ArrayList<Jobs> newJobs){
         pastJobs = newJobs;
     }
+
+    /**
+     * If the date is null, set it to NA, else format the date
+     * @param date
+     */
     public void setStartCurrentDate(Date date){
         if (date == null){
             startCurrentDate = "NA";
@@ -197,4 +228,17 @@ public class OBAJWorker {
             startCurrentDate = formatter.format(date);
         }
     }
+
+    public void setLeaveReason(String input){
+        leaveReason = input;
+    }
+    public void setNumberChildren(int input){
+        numberChildren = input;
+    }
+    public void setMaritalStatus(String input){
+        maritalStatus = input;
+    }
+
+
+
 }
