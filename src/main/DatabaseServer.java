@@ -19,34 +19,52 @@
 package
         main;
 
-import org.w3c.dom.ls.LSOutput;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class DatabaseServer {
+    // initialize needed resources
+    private Socket socket = null;
+    private ServerSocket serverSocket = null;
+    private DataInputStream inClient = null;
+    private DataInputStream inConsole = null;
+    private DataOutputStream out = null;
+
     public DatabaseServer(int portNumber) throws IOException {
-        try (
-                // initialize server side Socket
-                ServerSocket DatabaseServerSocket = new ServerSocket(portNumber);
-                // accept client side connection
-                Socket  DatabaseClientSocket = DatabaseServerSocket.accept();
-                PrintWriter out = new PrintWriter(DatabaseClientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(DatabaseClientSocket.getInputStream()));
-        ) {
-            String input = "";
-            while (in.readLine() != null) {
+        // start the server and wait for a connection from a client
+        try {
+            serverSocket = new ServerSocket(portNumber);
+            System.out.println("Server started, waiting for client...");
+
+            socket = serverSocket.accept();
+            System.out.println("Client accepted on port: " + portNumber);
+
+            // takes input from the client socket
+            inClient = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+
+            // read message until over is sent
+            String lineIn = "";
+            String lineOut = "";
+            System.out.println("Getting message from client...");
+            while (!lineIn.equalsIgnoreCase("Over") ) {
                 try {
-                    input = in.readLine();
-                    out.println(input);
+                    lineIn = inClient.readUTF();
+                    System.out.printf("Client: " +lineIn+"\n");
+                    //lineOut = inConsole.readLine();
+                    //out.writeUTF(lineOut);
                 } catch (IOException i) {
-                    out.println(i);
+                    i.printStackTrace();
+                    System.out.println(i);
                 }
             }
+            //close connection
+            System.out.println("Closing Connection.");
+            socket.close();
+            inClient.close();
+
+        } catch (IOException e) {
+            System.out.println(e);
         }
     }
 

@@ -30,6 +30,8 @@ import java.util.Scanner;
 /**
  * Class for running the db program
  */
+
+// TODO: Anything that you type in is on the client side to be sent to the server side. Results that was ouputted to the console now needs to be outputted across your network through TCP/IP
 public class Main{
     private static OptionMenuUtil options = new OptionMenuUtil();
     private static String[] dbFiles = {"db1.csv","db2.csv","db3.csv"};
@@ -46,14 +48,16 @@ public class Main{
      * Users can save changes to a new csv called dbSave.csv
      */
     public static void main(String[] args) {
+        DatabaseServer server = null;
+        DatabaseClient client = null;
         System.out.println("Do you want to run the program in Server/Client mode [Y|N]: ");
         Scanner in = new Scanner(System.in);
         String answer = in.next().strip();
         if (answer.equalsIgnoreCase("N")) {
             runNormal();
         } else {
-            
-            System.out.println("Are you running this instance in Server ot Client mode? [S|C]: ");
+
+            System.out.println("Are you running this instance in Server or Client mode? [S|C]: ");
             String serverOrClient = in.next().strip();
             String hostName;
             System.out.println("Please specify port number: ");
@@ -62,14 +66,13 @@ public class Main{
                 //Running program in Server Mode
                 System.out.println("Running the program as Server");
                 try {
-                    DatabaseServer server = new DatabaseServer(portNumber);
+                    server = new DatabaseServer(portNumber);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
                 // Running the program in Client Mode
                 System.out.println("Running the program as Client");
-
                 System.out.println("Do you want to run on localhost? [Y|N]: ");
                 String localHostAns = in.next().strip();
                 if (localHostAns.equalsIgnoreCase("Y")) {
@@ -81,8 +84,8 @@ public class Main{
                 // Start the Client
                 try {
                     System.out.println("Establishing Connection to Server");
-                    DatabaseClient client = new DatabaseClient(hostName,portNumber);
-                    System.out.printf("Connection Established");
+                    client = new DatabaseClient(hostName,portNumber);
+                    System.out.println("Connection closed");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
