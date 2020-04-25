@@ -531,4 +531,12 @@ public class Database{
             System.out.println("Error, invalid input");
         }
     }
+
+    /**
+     * Gets the number of workers in the database, used for testing
+     * @return Number of workers in the database
+     */
+    public int getSize(){
+        return list.size();
+    }
 }
