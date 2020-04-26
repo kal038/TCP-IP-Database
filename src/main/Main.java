@@ -48,7 +48,7 @@ public class Main{
      * Users can undo the last three changes
      * Users can save changes to a new csv called dbSave.csv
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         DatabaseServer server = null;
         DatabaseClient client = null;
         System.out.println("Do you want to run the program in Server/Client mode [Y|N]: ");

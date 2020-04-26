@@ -23,38 +23,79 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseClient {
     // initialize socket, output stream and input stream
     private static OptionMenuUtil options = new OptionMenuUtil();
     private Socket socket ;
-    private Scanner inConsole = new Scanner(System.in);
+    private Scanner scanner;
     private InputStreamReader in;
     private BufferedReader reader;
     private PrintWriter writer;
-    private boolean isTurn;
+    private boolean isTurnToWrite;
 
-    public DatabaseClient(String hostName, int portNumber) throws IOException {
-        // Initialize Client sockets and DataStreams
-        initializeStreams(hostName,portNumber);
-        // Print the menu of choices
-        while (!socket.isClosed()) {
-            int action = options.printMenuClient();
+    public DatabaseClient(String hostName, int portNumber) throws IOException, InterruptedException {
+//        while (!socket.isClosed()) {
+//            int action = options.printMenuClient();
+//            if (action == 0) {
+//                // exit case
+//                closeConnection();
+//            } else {
+//
+//                writer.writeUTF(Integer.toString(action));
+//                //Thread.sleep(5000);
+//                writer.flush();
+//                Thread.sleep(5000);
+//                isTurnToWrite = false;
+//                }
+//            }
+        try {
+            initializeStreams(hostName,portNumber);
 
-            if (action == 0) {
-                // exit case
-                closeConnection();
-            } else {
-                // the user did not choose to exit
-                //TODO: Proceed to send user choice to server
-                writer.println(action);
-                writer.flush();
+            new Thread(() -> {
+                try {
+                    while (!socket.isClosed()) {
+                        String text = reader.readLine();
+                        System.out.println(text);
+                    }
+
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }).start();
+
+            new Thread(() -> {
+                try {
+                    while (!socket.isClosed()) {
+                        options.printMenuClient();
+                        String text = scanner.nextLine();
+                        writer.println(text);
+                        writer.flush();
+                        //Thread.sleep(1000);
+                        if (Integer.parseInt(text) == 0) {
+                            // exit case
+                            closeConnection();
+                        }
+                   }
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }).start();
+
+            while (!socket.isClosed()) {
+                Thread.sleep(1000);
             }
-            // simple action
-
-
+        } catch (Exception ex) {
+            System.out.println(ex);
         }
+
     }
+
+
+
+
 
     private void initializeStreams(String hostName, int portNumber) throws IOException {
         try {
@@ -66,6 +107,9 @@ public class DatabaseClient {
             reader = new BufferedReader(in);
             // setup output to server (socket out)
             writer = new PrintWriter(socket.getOutputStream());
+            // scanner setup
+            scanner = new Scanner(System.in);
+
         } catch (UnknownHostException u) {
             System.out.println(u);
         } catch (EOFException i) {
@@ -73,12 +117,7 @@ public class DatabaseClient {
         }
     }
 
-    private String sendString(String lineOut) {
-        lineOut = inConsole.nextLine();
-        writer.println(lineOut);
 
-        return lineOut;
-    }
 
     private void closeConnection() throws IOException {
         try {
@@ -86,7 +125,6 @@ public class DatabaseClient {
             writer.close();
             socket.close();
         } catch (EOFException i) {
-            i.printStackTrace();
             System.out.println(i);
         }
     }
