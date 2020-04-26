@@ -30,7 +30,7 @@ public class DatabaseServer {
     private InputStreamReader in;
     private BufferedReader reader;
     private PrintWriter writer ;
-    private boolean isTurn;
+    private boolean isTurnToWrite;
 
     /**
      * Consulted GeeksforGeeks and Baeldung
@@ -56,7 +56,8 @@ public class DatabaseServer {
             } else {
                 // a connection is maintained
                 String text = reader.readLine();
-                System.out.println("Client Chose Menu Option: " + text);
+                System.out.println("Received " + text);
+                isTurnToWrite = true;
                 //writer.println("Hello" + text);
                 //writer.flush();
             }
@@ -98,7 +99,7 @@ public class DatabaseServer {
             System.out.println(i);
         }
         // tell the server that it is its turn now
-        isTurn = true;
+        isTurnToWrite = true;
         return lineIn;
     }
 

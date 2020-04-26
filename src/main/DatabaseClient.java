@@ -23,6 +23,8 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseClient {
     // initialize socket, output stream and input stream
@@ -32,29 +34,56 @@ public class DatabaseClient {
     private InputStreamReader in;
     private BufferedReader reader;
     private PrintWriter writer;
-    private boolean isTurn;
+    private boolean isTurnToWrite;
 
-    public DatabaseClient(String hostName, int portNumber) throws IOException {
+    public DatabaseClient(String hostName, int portNumber) throws IOException, InterruptedException {
         // Initialize Client sockets and DataStreams
-        initializeStreams(hostName,portNumber);
+        initializeStreams(hostName, portNumber);
         // Print the menu of choices
-        while (!socket.isClosed()) {
-            int action = options.printMenuClient();
-
-            if (action == 0) {
-                // exit case
-                closeConnection();
-            } else {
-                // the user did not choose to exit
-                //TODO: Proceed to send user choice to server
-                writer.println(action);
-                writer.flush();
-            }
+//        while (!socket.isClosed()) {
+//            int action = options.printMenuClient();
+//
+//            if (action == 0) {
+//                // exit case
+//                closeConnection();
+//            } else {
+//                // the user did not choose to exit
+//                //TODO: Proceed to send user choice to server
+//                writer.println(action);
+//                writer.flush();
+//                isTurnToWrite = false;
+//            }
             // simple action
+            new Thread(() -> {
+                try {
+                    while (!socket.isClosed()) {
+                        String text = reader.readLine();
+                        System.out.println(text);
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }).start();
+
+            new Thread(() -> {
+                try {
+                    while (!socket.isClosed()) {
+                        String text = inConsole.next();
+                        writer.println(text);
+                        writer.flush();
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }).start();
+
+            while (!socket.isClosed()) {
+                Thread.sleep(1000);
+            }
 
 
         }
-    }
+
 
     private void initializeStreams(String hostName, int portNumber) throws IOException {
         try {
