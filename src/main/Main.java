@@ -21,6 +21,7 @@ package
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.BindException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class Main{
      * Users can undo the last three changes
      * Users can save changes to a new csv called dbSave.csv
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         DatabaseServer server = null;
         DatabaseClient client = null;
         System.out.println("Do you want to run the program in Server/Client mode [Y|N]: ");
@@ -57,7 +58,7 @@ public class Main{
             runNormal();
         } else {
 
-            System.out.println("Are you running this instance in Server or Client mode? [S|C]: ");
+            System.out.println("Are you running as Server or Client? [S|C]: ");
             String serverOrClient = in.next().strip();
             String hostName;
             System.out.println("Please specify port number: ");
@@ -65,10 +66,11 @@ public class Main{
             if (serverOrClient.equalsIgnoreCase("S")) {
                 //Running program in Server Mode
                 System.out.println("Running the program as Server");
+
                 try {
                     server = new DatabaseServer(portNumber);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException b) {
+                    System.out.println(b);;
                 }
             } else {
                 // Running the program in Client Mode

@@ -19,6 +19,7 @@
 package
         main;
 
+import java.io.DataOutputStream;
 import java.util.Scanner;
 
 /**
@@ -64,6 +65,31 @@ public final class OptionMenuUtil {
         catch (NumberFormatException n){
             return 0;
         }
+
+    }
+    public int printMenuClient() {
+        System.out.println("------------------------------------------------");
+        System.out.println("Welcome to the database explorer!");
+        System.out.println("-----------------OPTION MENU--------------------");
+        System.out.println("1. Query Database Data");
+        System.out.println("2: Chat With Server");
+        System.out.println("0: Exit Application");
+        System.out.printf("Select Option: ");
+        Scanner in = new Scanner(System.in);
+        String usersChoice = in.nextLine();
+        System.out.println("You have chosen option "+usersChoice);
+        int ans;
+        try {
+            ans = Integer.parseInt(usersChoice);
+            if (ans < 0 || ans > 2)
+                return 0;
+            else
+                return ans;
+        }
+        catch (NumberFormatException n){
+            return 0;
+        }
+
 
     }
     
