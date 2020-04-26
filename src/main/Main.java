@@ -32,7 +32,7 @@ import java.util.Scanner;
  * Class for running the db program
  */
 
-// TODO: Anything that you type in is on the client side to be sent to the server side. Results that was ouputted to the console now needs to be outputted across your network through TCP/IP
+// TODO: Anything that you type in is on the client side to be sent to the server side. Results that was output to the console now needs to be outputted across your network through TCP/IP
 public class Main{
     private static OptionMenuUtil options = new OptionMenuUtil();
     private static String[] dbFiles = {"db1.csv","db2.csv","db3.csv"};
@@ -241,10 +241,14 @@ public class Main{
             String input = JOptionPane.showInputDialog("Please enter the date in this format: MM/dd/yyyy");
             try{
                 Date date1=new SimpleDateFormat("MM/dd/yyyy").parse(input);
-                if (date1.compareTo(sysTime) < 0)
+                if (date1.compareTo(sysTime) < 0) {
+                    System.out.println("Date is before current date, using system time.");
                     return formatter.format(sysTime);
-                else
+                }
+                else {
+                    System.out.println("Using input time.");
                     return formatter.format(date1);
+                }
             }
             catch (ParseException e) {
                 JOptionPane.showMessageDialog(null,"Invalid date, using current time");
