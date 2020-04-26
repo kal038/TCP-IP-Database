@@ -22,6 +22,7 @@ package
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class DatabaseServer {
     // initialize needed resources
@@ -40,33 +41,66 @@ public class DatabaseServer {
      * @throws IOException
      */
     public DatabaseServer(int portNumber) throws IOException {
-        // start the server and wait for a connection from a client
-        serverSocket = new ServerSocket(portNumber);
-        System.out.println("Server started, waiting for client...");
-        initializeSocketStreams(portNumber);
 
+        try {
+            serverSocket = new ServerSocket(portNumber);
+            System.out.println("Server started, waiting for client...");
+            initializeSocketStreams(portNumber);
+            while (!socket.isClosed()) {
 
-
-        while(!socket.isClosed() ) {
-            //check for client drops
-            if (reader.readLine() == null) {
-                System.out.println("The client has disconnected, waiting for new client to join...");
-                //waiting for new client
-                initializeSocketStreams(portNumber);
-            } else {
-                // a connection is maintained
                 String text = reader.readLine();
-                System.out.println("Received " + text);
-                isTurnToWrite = true;
-                //writer.println("Hello" + text);
-                //writer.flush();
+                if (text == null) {
+                    System.out.println("Client Dropped, Awaiting new Client");
+                    initializeSocketStreams(portNumber);
+                }
+                if (text != null) {
+                    // This is where we process data
+                    System.out.println(text);
+                    if (text.equalsIgnoreCase("1")) {
+                        System.out.println("query");
+                        //writer.println("query results: ");
+                        //writer.flush();
+                    } else if (text.equalsIgnoreCase("2")) {
+                        System.out.println("chat");
+                        //writer.println("chat function");
+                        //writer.flush();
+                    }
+                }
             }
+
+
+        } catch (Exception ex) {
+            System.err.println(ex);
+//        try {
+//            ServerSocket server = new ServerSocket(4000);
+//
+//            Socket client = server.accept();
+//
+//            PrintWriter writer = new PrintWriter(client.getOutputStream());
+//            InputStreamReader streamReader = new InputStreamReader(client.getInputStream());
+//            BufferedReader reader = new BufferedReader(streamReader);
+//
+//            while (!client.isClosed()) {
+//
+//                String text = reader.readLine();
+//                if (text == null) {break;}
+//                System.out.println("Recevied: " + text);
+//
+//            }
+//        } catch (Exception ex) {
+//            System.err.println(ex);
+//        }
+
         }
-
-
-
-
     }
+
+
+
+
+
+
+
+
 
     private void chat() {
         // read message until over is sent
@@ -74,7 +108,7 @@ public class DatabaseServer {
         System.out.println("Getting message from client...");
         while (!serverSocket.isClosed() ) {
             try {
-                lineIn = receiveAndPrint(lineIn);
+                 receiveAndPrint(lineIn);
             }catch (NullPointerException n) {
                 System.out.println(n);
             }
@@ -88,7 +122,7 @@ public class DatabaseServer {
         in.close();
     }
 
-    private String receiveAndPrint(String lineIn) {
+    private void receiveAndPrint(String lineIn) {
         try {
             lineIn = reader.readLine();
             System.out.printf("Client: " +lineIn+"\n");
@@ -100,7 +134,7 @@ public class DatabaseServer {
         }
         // tell the server that it is its turn now
         isTurnToWrite = true;
-        return lineIn;
+
     }
 
     private void initializeSocketStreams (int portNumber) {

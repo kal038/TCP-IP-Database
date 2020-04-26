@@ -29,19 +29,20 @@ public final class OptionMenuUtil {
 
     /**
      * Prints the menu that shows the user what functions they can do with the database
+     *
      * @return
      */
     public int printMenu() {
         System.out.println("Welcome to the database explorer!");
         /**
-        System.out.println("Please enter the name of your database file, or press Enter to process default file (.csv extension included): ");
-        Scanner in = new Scanner(System.in);
-        String fileName = in.nextLine();
-        // a default option
-        if (fileName.equals("")) {fileName = "defDB.csv";}
-        // the option menu
-        System.out.println("Processing file [" + fileName + "]");
-        **/
+         System.out.println("Please enter the name of your database file, or press Enter to process default file (.csv extension included): ");
+         Scanner in = new Scanner(System.in);
+         String fileName = in.nextLine();
+         // a default option
+         if (fileName.equals("")) {fileName = "defDB.csv";}
+         // the option menu
+         System.out.println("Processing file [" + fileName + "]");
+         **/
         Scanner in = new Scanner(System.in);
         System.out.println("-----------------OPTION MENU--------------------");
         System.out.println("1. Query Database Data");
@@ -53,7 +54,7 @@ public final class OptionMenuUtil {
         // user's choice
         System.out.printf("Please choose an option above: ");
         String usersChoice = in.nextLine();
-        System.out.println("You have chosen option "+usersChoice);
+        System.out.println("You have chosen option " + usersChoice);
         int ans;
         try {
             ans = Integer.parseInt(usersChoice);
@@ -61,13 +62,13 @@ public final class OptionMenuUtil {
                 return 0;
             else
                 return ans;
-        }
-        catch (NumberFormatException n){
+        } catch (NumberFormatException n) {
             return 0;
         }
 
     }
-    public int printMenuClient() {
+
+    public void printMenuClient() {
         System.out.println("------------------------------------------------");
         System.out.println("Welcome to the database explorer!");
         System.out.println("-----------------OPTION MENU--------------------");
@@ -75,22 +76,21 @@ public final class OptionMenuUtil {
         System.out.println("2: Chat With Server");
         System.out.println("0: Exit Application");
         System.out.printf("Select Option: ");
-        Scanner in = new Scanner(System.in);
-        String usersChoice = in.nextLine();
-        System.out.println("You have chosen option "+usersChoice);
-        int ans;
-        try {
-            ans = Integer.parseInt(usersChoice);
-            if (ans < 0 || ans > 2)
-                return 0;
-            else
-                return ans;
-        }
-        catch (NumberFormatException n){
-            return 0;
-        }
-
-
     }
-    
+    //Scanner in = new Scanner(System.in);
+    //String usersChoice = in.nextLine();
+//        System.out.println("You have chosen option "+usersChoice);
+//        int ans;
+//        try {
+//            ans = Integer.parseInt(usersChoice);
+//            if (ans < 0 || ans > 2)
+//                return 0;
+//            else
+//                return ans;
+//        }
+//        catch (NumberFormatException n){
+//            return 0;
+//        }
+
+
 }
