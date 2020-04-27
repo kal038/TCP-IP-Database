@@ -20,4 +20,8 @@ the user is asked to input a time or select the system time.
 NOTE: Test cases have been added and some methods do not have test cases since they are
 proven to be functional by the testing of other methods which call them.
 
+**LINKS TO VIDEOS**
+
+Component2 Functionalities: https://drive.google.com/file/d/1DdJu5V9TCUp8Z1X-2lMiCPdynzVkfsui/view?usp=sharing
+
 Authors: Parker Messner and Khoi Lam
