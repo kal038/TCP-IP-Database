@@ -51,6 +51,7 @@ public class DatabaseServer {
 
             // Initiate conversation with client
             DatabaseProtocol dbp = new DatabaseProtocol();
+            // message sent
             outputLine = dbp.processInput(null);
             writer.println(outputLine);
 

@@ -36,7 +36,7 @@ public class DatabaseClient {
     private InputStreamReader in;
     private BufferedReader reader;
     private PrintWriter writer;
-    private static OptionMenuUtil options = new OptionMenuUtil();
+
 
     public DatabaseClient(String hostName, int portNumber) throws IOException, InterruptedException {
         try (
@@ -51,18 +51,27 @@ public class DatabaseClient {
             //socket.setSoTimeout(2000);
             System.out.println("Connection Established with Server on Port " + portNumber);
 
-            while ((fromServer = reader.readLine()) != null) {
-                System.out.println(fromServer);
-                if (fromServer.equalsIgnoreCase("MENU:")) {
-                    System.out.println(options.getMenu());
-                } else if (fromServer.equalsIgnoreCase("QUERY")) {
-                    String instructions = " Choose criteria for query in this specific format, the maximum number for NUMRESULTS is 100\n" +
-                            "[NUMRESULTS], [CHARACTERISTICS] " +
-                            "in which [CHARACTERISTICS] is [FIELD:FIELDRESULTS]\n" +
-                            "Example: [MaritalStatus:Married] or [Nationality:Italian]. ";
-                    System.out.println(instructions);
-                }
+            while (!socket.isClosed()) {
+                do {
+                    //System.out.println("pls don't");
+                    fromServer = reader.readLine();
+                    if (fromServer.equals("END.")) {break;}
+                    System.out.println(fromServer);
 
+                } while (fromServer != null);
+//                fromServer = reader.readLine();
+//                System.out.println(fromServer);
+//                    if (fromServer.equalsIgnoreCase("MENU:")) {
+//                        System.out.println(options.getMenu());
+//                    } else if (fromServer.equalsIgnoreCase("QUERY")) {
+//                        String instructions = " Choose criteria for query in this specific format, the maximum number for NUMRESULTS is 100\n" +
+//                                "[NUMRESULTS], [CHARACTERISTICS] " +
+//                                "in which [CHARACTERISTICS] is [FIELD:FIELDRESULTS]\n" +
+//                                "Example: [MaritalStatus:Married] or [Nationality:Italian]. ";
+//                        System.out.println(instructions);
+//                    }
+
+               // System.out.println("Choose Option: ");
                 fromUser = inConsole.readLine();
                 if (fromUser != null) {
                     if (fromUser.equals("0")) {

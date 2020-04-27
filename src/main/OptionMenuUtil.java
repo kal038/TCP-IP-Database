@@ -74,7 +74,7 @@ public final class OptionMenuUtil {
                 "-----------------OPTION MENU--------------------\n" +
                 "1. Query Database Data\n" +
                 "2: Chat With Server\n" +
-                "0: Exit Application\n";
+                "0: Exit Application";
         return output;
 
     }
