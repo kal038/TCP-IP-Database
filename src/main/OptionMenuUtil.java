@@ -68,14 +68,15 @@ public final class OptionMenuUtil {
 
     }
 
-    public void printMenuClient() {
-        System.out.println("------------------------------------------------");
-        System.out.println("Welcome to the database explorer!");
-        System.out.println("-----------------OPTION MENU--------------------");
-        System.out.println("1. Query Database Data");
-        System.out.println("2: Chat With Server");
-        System.out.println("0: Exit Application");
-        System.out.printf("Select Option: ");
+    public String getMenu() {
+        String output = "------------------------------------------------\n" +
+                "Welcome to the database explorer!\n" +
+                "-----------------OPTION MENU--------------------\n" +
+                "1. Query Database Data\n" +
+                "2: Chat With Server\n" +
+                "0: Exit Application\n";
+        return output;
+
     }
     //Scanner in = new Scanner(System.in);
     //String usersChoice = in.nextLine();

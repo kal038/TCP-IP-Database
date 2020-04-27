@@ -23,74 +23,68 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+
+/**
+ * Client for the Database, with skeleton code from Oracle Socket Tutorial
+ * @link : https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
+ */
 public class DatabaseClient {
     // initialize socket, output stream and input stream
-    private static OptionMenuUtil options = new OptionMenuUtil();
     private Socket socket ;
     private Scanner scanner;
     private InputStreamReader in;
     private BufferedReader reader;
     private PrintWriter writer;
-    private boolean isTurnToWrite;
+    private static OptionMenuUtil options = new OptionMenuUtil();
 
     public DatabaseClient(String hostName, int portNumber) throws IOException, InterruptedException {
-//        while (!socket.isClosed()) {
-//            int action = options.printMenuClient();
-//            if (action == 0) {
-//                // exit case
-//                closeConnection();
-//            } else {
-//
-//                writer.writeUTF(Integer.toString(action));
-//                //Thread.sleep(5000);
-//                writer.flush();
-//                Thread.sleep(5000);
-//                isTurnToWrite = false;
-//                }
-//            }
-        try {
-            initializeStreams(hostName,portNumber);
+        try (
+                Socket socket = new Socket(hostName, portNumber);
+                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(socket.getInputStream()));
+        ) {
+            BufferedReader inConsole = new BufferedReader(new InputStreamReader(System.in));
+            String fromServer;
+            String fromUser;
+            //socket.setSoTimeout(2000);
+            System.out.println("Connection Established with Server on Port " + portNumber);
 
-            new Thread(() -> {
-                try {
-                    while (!socket.isClosed()) {
-                        String text = reader.readLine();
-                        System.out.println(text);
+            while ((fromServer = reader.readLine()) != null) {
+                System.out.println(fromServer);
+                if (fromServer.equalsIgnoreCase("MENU:")) {
+                    System.out.println(options.getMenu());
+                } else if (fromServer.equalsIgnoreCase("QUERY")) {
+                    String instructions = " Choose criteria for query in this specific format, the maximum number for NUMRESULTS is 100\n" +
+                            "[NUMRESULTS], [CHARACTERISTICS] " +
+                            "in which [CHARACTERISTICS] is [FIELD:FIELDRESULTS]\n" +
+                            "Example: [MaritalStatus:Married] or [Nationality:Italian]. ";
+                    System.out.println(instructions);
+                }
+
+                fromUser = inConsole.readLine();
+                if (fromUser != null) {
+                    if (fromUser.equals("0")) {
+                        System.out.println("Closing Connection... Goodbye!");
+                        //break;
+                        socket.close();
+                        writer.close();
+                        reader.close();
                     }
-
-                } catch (Exception ex) {
-                    System.out.println(ex);
+                    //System.out.println("Client: " + fromUser);
+                    writer.println(fromUser);
                 }
-            }).start();
-
-            new Thread(() -> {
-                try {
-                    while (!socket.isClosed()) {
-                        options.printMenuClient();
-                        String text = scanner.nextLine();
-                        writer.println(text);
-                        writer.flush();
-                        //Thread.sleep(1000);
-                        if (Integer.parseInt(text) == 0) {
-                            // exit case
-                            closeConnection();
-                        }
-                   }
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
-            }).start();
-
-            while (!socket.isClosed()) {
-                Thread.sleep(1000);
             }
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
 
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host " + hostName);
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O for the connection to " +
+                    hostName);
+            System.exit(1);
+        }
     }
 
 
@@ -128,6 +122,54 @@ public class DatabaseClient {
             System.out.println(i);
         }
     }
+
+    //depreciated stuff hidden here (shhhhh!)
+//        try {
+//            initializeStreams(hostName,portNumber);
+
+//            new Thread(() -> {
+//                try {
+//                    while (true) {
+//                        if(reader.readLine() == null) {
+//                            System.out.println("Go to hell");
+//                            break;
+//                        }
+//                        String text = reader.readLine();
+//                        System.out.println(text);
+//                    }
+//
+//                } catch (Exception ex) {
+//                    System.out.println(ex);
+//                }
+//            }).start();
+
+//            new Thread(() -> {
+//                try {
+//                    while (!socket.isClosed()) {
+//                        if(reader.readLine() == null) {
+//                            System.out.println("Loss server");
+//                            break;}
+//                        String text = scanner.nextLine();
+//                        writer.println(text);
+//                        writer.flush();
+//                        //Thread.sleep(1000);
+//                        if (Integer.parseInt(text) == 0) {
+//                            // exit case
+//                            closeConnection();
+//                        }
+//                   }
+//                } catch (Exception ex) {
+//                    System.out.println(ex);
+//                }
+//            }).start();
+//
+//            while (!socket.isClosed()) {
+//
+//                Thread.sleep(1000);
+//            }
+//        } catch (Exception ex) {
+//            System.out.println(ex);
+//        }
 
 
 }
