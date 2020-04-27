@@ -31,6 +31,7 @@ import java.util.ArrayList;
  * 2. The server recieves an answer from the client and proceed to reply with RESULTS
  */
 public class DatabaseProtocol {
+    // protocol stuff
     private static OptionMenuUtil options = new OptionMenuUtil();
     private static final int WAITING = 0;
     private static final int SENTMENU = 1;
@@ -38,17 +39,14 @@ public class DatabaseProtocol {
     private static final int SENTCHATFORMAT = 3;
     private static final int SENTQUERYRESULTS = 4;
     private static final String END = "\nEND.";
-
-
     private int currState = WAITING;
-
-//    private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-//    private String[] answers = { "Turnip the heat, it's cold in here!",
-//            "I didn't know you could yodel!",
-//            "Bless you!",
-//            "Is there an owl in here?",
-//            "Is there an echo in here?" };
-
+    //database stuff
+    private static String[] dbFiles = {"db1.csv","db2.csv","db3.csv"};
+    private static String saveFile = "dbSave.csv";
+    private static Database db;
+    private static int index = 0;//Points to the most current database
+    private static int undosLeft = 0;
+    private static String fileName = "defDB.csv";
     public String processInput(String theInput) {
         String theOutput = null;
 //        if (state == WAITING) {
@@ -105,9 +103,12 @@ public class DatabaseProtocol {
             }
 
         } else if (currState == SENTQUERYFORMAT) {
+                db = new Database(fileName);
+                //inputs to the query function
+                int numQueries;
                 ArrayList<String> characteristics = new ArrayList<String>();
                 String[] tokens = theInput.strip().split(",");
-                int numQueries = Integer.parseInt(tokens[0]);
+                numQueries = Integer.parseInt(tokens[0]);
                 characteristics.add(tokens[1]);
                 if (tokens.length == 3) {
                     characteristics.add(tokens[2]);
@@ -115,13 +116,20 @@ public class DatabaseProtocol {
                 if (tokens.length == 4) {
                     characteristics.add(tokens[3]);
                 }
-                theOutput = Integer.toString(numQueries) + END;
+                ArrayList<OBAJWorker> answer = db.queryWorker(numQueries, characteristics);
+                String answerInString = "";
+                for (OBAJWorker w: answer){
+                answerInString += (w.toString() + "\n");
+                }
+                theOutput = answerInString + END;
                 currState = SENTQUERYRESULTS;
 
 
 
             // Enable the query function and change state to SENT QUERY RESULTS
 
+        } else if (currState == SENTCHATFORMAT) {
+            //TODO: Enable chat mode by using threads?
         }
         return theOutput;
     }

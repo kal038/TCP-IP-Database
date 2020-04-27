@@ -47,6 +47,7 @@ public class DatabaseServer {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
         ) {
+            System.out.println("Client connected on port "+portNumber);
             String inputLine, outputLine;
 
             // Initiate conversation with client
