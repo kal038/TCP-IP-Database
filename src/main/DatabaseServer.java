@@ -53,8 +53,12 @@ public class DatabaseServer {
             // Initiate conversation with client
             DatabaseProtocol dbp = new DatabaseProtocol();
             // message sent
-            outputLine = dbp.processInput(null);
-            writer.println(outputLine);
+            try {
+                outputLine = dbp.processInput(null);
+                writer.println(outputLine);
+            } catch (NullPointerException n) {
+                System.out.println(n);
+            }
 
             while ((inputLine = reader.readLine()) != null) {
                 outputLine = dbp.processInput(inputLine);

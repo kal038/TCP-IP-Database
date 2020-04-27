@@ -43,10 +43,12 @@ public class DatabaseProtocol {
     //database stuff
     private static String[] dbFiles = {"db1.csv","db2.csv","db3.csv"};
     private static String saveFile = "dbSave.csv";
-    private static Database db;
     private static int index = 0;//Points to the most current database
     private static int undosLeft = 0;
     private static String fileName = "defDB.csv";
+    private static Database db = new Database(fileName);
+    private Object IllegalArgumentException;
+
     public String processInput(String theInput) {
         String theOutput = null;
 //        if (state == WAITING) {
@@ -85,7 +87,9 @@ public class DatabaseProtocol {
 //            }
 //        }
 
-
+        if (theInput == null && currState != WAITING) {
+            throw new NullPointerException("Invalid Input, Type Something");
+        }
         if (currState == WAITING) {
             theOutput = "MENU:\n" + options.getMenu() + END;
             currState = SENTMENU;
@@ -103,7 +107,6 @@ public class DatabaseProtocol {
             }
 
         } else if (currState == SENTQUERYFORMAT) {
-                db = new Database(fileName);
                 //inputs to the query function
                 int numQueries;
                 ArrayList<String> characteristics = new ArrayList<String>();
@@ -121,15 +124,18 @@ public class DatabaseProtocol {
                 for (OBAJWorker w: answer){
                 answerInString += (w.toString() + "\n");
                 }
-                theOutput = answerInString + END;
+                theOutput = answerInString + "Want more queries? [Y|N]:  "+ END;
                 currState = SENTQUERYRESULTS;
-
-
-
-            // Enable the query function and change state to SENT QUERY RESULTS
-
         } else if (currState == SENTCHATFORMAT) {
             //TODO: Enable chat mode by using threads?
+        } else if (currState == SENTQUERYRESULTS) {
+            if (theInput.equalsIgnoreCase("Y")) {
+                theOutput = "Let's do it, input your query command:" + END;
+                currState = SENTQUERYFORMAT;}
+            else {
+                theOutput = "Exiting Query Page, Back to menu? [Y|N]: " + END;
+                currState = WAITING;
+            }
         }
         return theOutput;
     }
